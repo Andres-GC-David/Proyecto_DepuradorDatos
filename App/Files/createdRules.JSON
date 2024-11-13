@@ -1,0 +1,10 @@
+[
+    {
+        "rule_name": "Regla Personalizada 3",
+        "code": "data[column] = data[column].apply(lambda x: x if re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$', str(x)) else 'Correo invalido')"
+    },
+    {
+        "rule_name": "g",
+        "code": "data[column] = data[column].apply(lambda x: x if not isinstance(x, str) else re.sub(r'[^A-Za-z0-9\\\\\\\\s]', '', unidecode(x.replace('\u00f1', 'n').replace('\u00d1', 'N'))))"
+    }
+]

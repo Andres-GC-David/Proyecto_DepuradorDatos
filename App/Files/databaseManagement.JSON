@@ -1,0 +1,79 @@
+{
+    "axiscoope": {
+        "cl_personas": {
+            "clave": "ID_PERSONA",
+            "campos": [
+                "ID_PERSONA",
+                "NOMBRES",
+                "IDENTIFICACION"
+            ]
+        },
+        "cl_ubicaciones": {
+            "clave": "ID_PERSONA",
+            "campos": [
+                "TELEFONO1",
+                "TELEFONO2",
+                "CELULAR1",
+                "CELULAR2",
+                "CUENTA_CORREO"
+            ]
+        }
+    },
+    "coopegua": {
+        "cliente": {
+            "clave": "TELEFONO1",
+            "campos": [
+                "TELEFONO1",
+                "TELEFONO2"
+            ]
+        },
+        "usuario_cliente": {
+            "clave": "CEDULA",
+            "campos": [
+                "CEL",
+                "EMAIL"
+            ]
+        },
+        "proveedor": {
+            "clave": "E_MAIL",
+            "campos": [
+                "E_MAIL",
+                "TELEFONO1",
+                "TELEFONO2"
+            ]
+        },
+        "empleado": {
+            "clave": "TELEFONO1",
+            "campos": [
+                "TELEFONO1",
+                "TELEFONO2",
+                "TELEFONO3",
+                "E_MAIL"
+            ]
+        }
+    },
+    "coopesa": {
+        "cliente": {
+            "clave": "TELEFONO1",
+            "campos": [
+                "TELEFONO1",
+                "TELEFONO2"
+            ]
+        },
+        "proveedor": {
+            "clave": "E_MAIL",
+            "campos": [
+                "E_MAIL"
+            ]
+        },
+        "empleado": {
+            "clave": "TELEFONO1",
+            "campos": [
+                "TELEFONO1",
+                "TELEFONO2",
+                "TELEFONO3",
+                "E_MAIL"
+            ]
+        }
+    }
+}

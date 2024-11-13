@@ -1,0 +1,181 @@
+{
+    "general_rules_pool": [
+        "Estandarizacion de Telefonos",
+        "Validacion Correos",
+        "Estandarizacion de Cedulas",
+        "Eliminacion de Duplicados",
+        "Regla Personalizada 3",
+        "g"
+    ],
+    "file_rules": {
+        "CSV": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los numeros telefonicos."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Estandariza el formato de las cedulas segun un formato especifico."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Descripcion aqui"
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Descripcion aqui"
+            }
+        ],
+        "XLSX": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los nuameros telefonicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electronico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Estandariza el formato de las cedulas segun un formato especifico."
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Elimina filas duplicadas del archivo basado en las columnas seleccionadas."
+            }
+        ],
+        "TXT": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los numeros telefonicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electro3nico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Estandariza el formato de las cedulas segun un formato especifico."
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Elimina filas duplicadas del archivo basado en las columnas seleccionadas."
+            }
+        ]
+    },
+    "table_rules": {
+        "cl_personas": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los numeros telefonicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electronico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Descripcion aqui"
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Descripcion aqui"
+            }
+        ],
+        "cl_ubicaciones": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los nuameros telefo3nicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electronico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Estandariza el formato de las cedulas segun un formato especifico."
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Elimina filas duplicadas basadas en las columnas seleccionadas."
+            }
+        ],
+        "cliente": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los numeros telefonicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electronico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Estandariza el formato de las cedulas segun un formato especifico."
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Elimina filas duplicadas basadas en las columnas seleccionadas."
+            }
+        ],
+        "usuario_cliente": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los numeros telefonicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electronico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Descripcion aqui"
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Descripcion aqui"
+            },
+            {
+                "rule": "Regla Personalizada 3",
+                "description": "Descripcion aqui"
+            }
+        ],
+        "empleado": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los numeros telefonicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electronico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Estandariza el formato de las cedulas segun un formato especifico."
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Elimina filas duplicadas basadas en las columnas seleccionadas."
+            }
+        ],
+        "proveedor": [
+            {
+                "rule": "Estandarizacion de Telefonos",
+                "description": "Estandariza el formato de los numeros telefonicos."
+            },
+            {
+                "rule": "Validacion Correos",
+                "description": "Valida el formato de las direcciones de correo electronico."
+            },
+            {
+                "rule": "Estandarizacion de Cedulas",
+                "description": "Estandariza el formato de las cedulas segun un formato especifico."
+            },
+            {
+                "rule": "Eliminacion de Duplicados",
+                "description": "Elimina filas duplicadas basadas en las columnas seleccionadas."
+            }
+        ],
+        "axiscoope.cl_personas": []
+    }
+}

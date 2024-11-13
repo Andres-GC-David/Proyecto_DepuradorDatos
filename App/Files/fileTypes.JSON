@@ -1,0 +1,14 @@
+[
+    {
+        "type": "txt",
+        "filter": "Archivos de texto (*.txt)"
+    },
+    {
+        "type": "csv",
+        "filter": "Archivos CSV (*.csv)"
+    },
+    {
+        "type": "xlsx",
+        "filter": "Archivos Excel (*.xlsx)"
+    }
+]
