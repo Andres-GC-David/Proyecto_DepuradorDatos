@@ -213,11 +213,13 @@ class DatabaseController:
                     modified_value = row[column_name]
 
                     # Solo generar el UPDATE si el valor original no es None, "None", null, o vacío, y hay un cambio
-                    if original_value not in [None, "None", "null", "", "ND"]:
-                        if original_value != modified_value:
-                            set_clause = f"{column_name}='{modified_value}'"
-                            where_clause = f"{primary_key}='{original_df.iloc[index][primary_key]}' AND {column_name}='{original_value}'"
-                            script += f"UPDATE {table_name} SET {set_clause} WHERE {where_clause};\n"
+                    if original_value not in [None, "None", "null", "", "ND"] and original_value != modified_value:
+                        set_clause = f"{column_name}='{modified_value}'"
+                        where_clause = f"{primary_key}='{original_df.iloc[index][primary_key]}'"
+                        # Agregar condición adicional si column_name no es el campo clave
+                        if column_name != primary_key:
+                            where_clause += f" AND {column_name}='{original_value}'"
+                        script += f"UPDATE {table_name} SET {set_clause} WHERE {where_clause};\n"
 
                 else:
                     # Si no se especifica column_name, recorre todas las columnas para detectar cambios
@@ -230,7 +232,9 @@ class DatabaseController:
                         # Solo incluir en el SET y WHERE si el valor original no es None, "None", null, o vacío, y ha cambiado
                         if original_value not in [None, "None", "null", "", "ND"] and original_value != modified_value:
                             changes.append(f"{col}='{modified_value}'")
-                            where_conditions.append(f"{col}='{original_value}'")
+                            # Evitar duplicación del campo clave en where_conditions
+                            if col != primary_key:
+                                where_conditions.append(f"{col}='{original_value}'")
 
                     # Solo generar el script si hay cambios
                     if changes:
@@ -249,6 +253,7 @@ class DatabaseController:
         except Exception as e:
             print(f"Error en generate_sql_script: {str(e)}")
             return None
+
 
 
     def save_sql_to_selected_path(self, file_path, script_content):

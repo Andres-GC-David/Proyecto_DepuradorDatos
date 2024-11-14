@@ -215,14 +215,13 @@ class Ui_Dialog(object):
                 row_position = self.summaryOfOptionsTable.rowCount()
                 self.summaryOfOptionsTable.insertRow(row_position)
                 self.summaryOfOptionsTable.setItem(row_position, 0, QtWidgets.QTableWidgetItem(rule[0]))
-                self.summaryOfOptionsTable.setItem(row_position, 2, QtWidgets.QTableWidgetItem(rule[1]))
+                self.summaryOfOptionsTable.setItem(row_position, 1, QtWidgets.QTableWidgetItem(rule[1]))
                 if isinstance(rule[2], dict):
                     description = str(rule[2])  
                 else:
                     description = rule[2]
-                self.summaryOfOptionsTable.setItem(row_position, 1, QtWidgets.QTableWidgetItem(description))
-
-                self.summaryOfOptionsTable.setItem(row_position, 1, QtWidgets.QTableWidgetItem(description))  # Columna 2: Descripción de la regla
+                    
+                self.summaryOfOptionsTable.setItem(row_position, 2, QtWidgets.QTableWidgetItem(description))  # Columna 2: Descripción de la regla
                 delete_button = QtWidgets.QPushButton("Eliminar")
                 delete_button.setStyleSheet("background-color: red; color: white;")
                 delete_button.clicked.connect(lambda checked, row=row_position: self.rule_selection_controller.remove_rule(self.summaryOfOptionsTable, row))
