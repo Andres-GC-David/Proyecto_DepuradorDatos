@@ -352,7 +352,8 @@ class Ui_Dialog(object):
                         column_selection_ui.setupUi(column_dialog)
                         if column_dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted and column_selection_ui.selected_column:
                             column_name = column_selection_ui.selected_column
-                            description = f"Estandarizacion de Cedulas, {column_name}"  # Agrega la columna al nombre de la regla
+                            description = ui.get_description()
+                            description += f", {column_name}"  # Agrega la columna al nombre de la regla
                         else:
                             return  # Salir si no hay columna seleccionada
                     except ValueError as e:

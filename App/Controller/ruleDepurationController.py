@@ -111,8 +111,9 @@ class RuleDepurationController:
             id_number = self._normalize_cedula_identidad_with_zero_separator(id_number)
 
         if "Eliminar ambos separadores" in params["modification"]:
+            id_number = str(id_number).replace('-', '')
             id_number = self._normalize_cedula_identidad_with_zero_separator(str(id_number).replace('-', '')) if id_type == "cedula_identidad" else str(id_number).replace('-', '')
-
+            
         # Validar el formato de identificación
         if "Validar formato de cédula" in params["modification"]:
             user_friendly_format = params["modification"].split(":")[-1].strip()
@@ -148,7 +149,8 @@ class RuleDepurationController:
             return "cedula_residencia"
         
         # Formato de cédula jurídica (10 dígitos sin guiones)
-        elif (re.fullmatch(r"\d{1}-\d{3}-\d{6}", id_number) or   
+        elif (re.fullmatch(r"\d{1}-\d{3}-\d{6}", id_number) or 
+            re.fullmatch(r"\d{9,25}", id_number) or  
             re.fullmatch(r"\d{10}", id_number)):
             return "cedula_juridica"
         
