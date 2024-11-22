@@ -66,6 +66,37 @@ class RuleDepurationController:
 
         return data
     
+    def apply_rules_with_progress(self, data, rules, progress_callback):
+        total_rows = len(data)
+        processed_rows = 0
+
+        for rule, column, params in rules:
+            if column not in data.columns:
+                self._show_column_error_message(column)
+                continue
+
+            for index, value in data[column].items():
+                if "Estandarizacion de Telefonos" in rule:
+                    data.at[index, column] = self._apply_phone_rules(pd.Series([value]), params).iloc[0]
+                elif "Estandarizacion de Cedulas" in rule:
+                    data.at[index, column] = self._apply_cedula_rules(pd.Series([value]), params).iloc[0]
+                elif "Validacion Correos" in rule:
+                    corrected_value = self._correct_common_domains(value)
+                    validated_value = self._apply_email_rules(pd.Series([corrected_value]), params).iloc[0]
+                    data.at[index, column] = validated_value
+                elif "Eliminacion de Duplicados" in rule:
+                    data = self._handle_duplicates(data, column, params)
+                else:
+                    data = self._apply_custom_rule(rule, data, column)
+
+                # Actualizar progreso
+                processed_rows += 1
+                progress = int((processed_rows / total_rows) * 100)
+                progress_callback(progress)
+
+        return data
+
+    
     def _apply_custom_rule(self, rule_name, data, column):
         normalized_rule_name = rule_name.strip().lower()
         common_imports = {

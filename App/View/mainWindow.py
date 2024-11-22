@@ -12,7 +12,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1150, 760) 
         MainWindow.setAutoFillBackground(False)
-        MainWindow.setStyleSheet("background-color: rgb(58, 99, 140);")
+        MainWindow.setStyleSheet("background-color: rgb(8,172,20);")
         MainWindow.setWindowTitle("Depurador de Datos")
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -118,7 +118,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold)
         button.setFont(font)
         button.setFixedSize(211, 41)
-        button.setStyleSheet("background-color: rgb(58, 99, 140);\n"
+        button.setStyleSheet("background-color: rgb(76,188,84);\n"
                              "color: rgb(255, 255, 255);\n"
                              "border-radius: 4px;\n")
         button.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -149,7 +149,7 @@ class Ui_MainWindow(object):
 
         label = QtWidgets.QLabel(label_text)
         label.setFont(QtGui.QFont("Segoe UI", 20, QtGui.QFont.Weight.Bold))
-        label.setStyleSheet("color: rgb(58, 99, 140);")
+        label.setStyleSheet("color: rgb(76,188,84);")
         label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(label)
 

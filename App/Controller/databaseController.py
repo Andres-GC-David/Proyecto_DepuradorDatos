@@ -108,23 +108,38 @@ class DatabaseController:
             all_tables.extend([table for table in table_list])
         return all_tables
 
-    def get_table_data(self, database_name, table_name):
+    def get_table_data(self, database_name, table_name, progress_callback=None):
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
 
-            # Asegúrate de obtener la lista de columnas como una cadena separada por comas
+            # Obtener columnas
             columns_to_display = self.get_columns_to_display(table_name)
+
+            # Contar filas para estimar progreso
+            count_query = f"SELECT COUNT(*) FROM {database_name}.{table_name}"
+            cursor.execute(count_query)
+            total_rows = cursor.fetchone()[0]
+
             query = f"SELECT {columns_to_display} FROM {database_name}.{table_name}"
             cursor.execute(query)
-            rows = cursor.fetchall()
+
+            rows = []
             column_names = [col[0] for col in cursor.description]
+
+            # Procesar filas y emitir progreso
+            for i, row in enumerate(cursor, start=1):
+                rows.append(row)
+                if progress_callback and total_rows > 0:
+                    progress_callback(int((i / total_rows) * 100))  # Emitir progreso
 
             cursor.close()
 
             return rows, column_names
-        except cx_Oracle.DatabaseError as e:
+        except Exception as e:
             raise Exception(f"Error al cargar datos: {str(e)}")
+
+
 
 
     def get_columns_to_display(self, table_name):
@@ -185,7 +200,7 @@ class DatabaseController:
 
         raise ValueError(f"No se encontró una base de datos para la tabla '{table_name}'")
 
-    def generate_sql_script(self, db_name, table_name, original_df, modified_df, save_path, column_name=None):
+    def generate_sql_script(self, db_name, table_name, original_df, modified_df, save_path, column_name=None, progress_callback=None):
         print(f"Column name: {column_name} desde dbController")
         try:
             # Obtener el esquema al que pertenece la tabla usando get_schema_by_table
@@ -206,20 +221,25 @@ class DatabaseController:
             # Generar el script SQL con el esquema
             script = f"USE {schema_name};\n"
 
+            total_rows = len(modified_df)  # Número total de filas
             for index, row in modified_df.iterrows():
                 # Verificar si hay un cambio en la columna especificada (column_name)
                 if column_name is not None:
-                    original_value = original_df.iloc[index][column_name]
-                    modified_value = row[column_name]
+                    for col in original_df.columns:
+                        original_value = original_df.iloc[index][col]
+                        modified_value = row[col]
 
-                    # Solo generar el UPDATE si el valor original no es None, "None", null, o vacío, y hay un cambio
-                    if original_value not in [None, "None", "null", "", "ND"] and original_value != modified_value:
-                        set_clause = f"{column_name}='{modified_value}'"
-                        where_clause = f"{primary_key}='{original_df.iloc[index][primary_key]}'"
-                        # Agregar condición adicional si column_name no es el campo clave
-                        if column_name != primary_key:
-                            where_clause += f" AND {column_name}='{original_value}'"
-                        script += f"UPDATE {table_name} SET {set_clause} WHERE {where_clause};\n"
+                        # Solo generar el UPDATE si el valor original no es None, "None", null, o vacío, y hay un cambio
+                        if original_value not in [None, "None", "null", "", "ND"] and original_value != modified_value:
+                            set_clause = f"{column_name}='{modified_value}'"
+                            where_clause = f"{primary_key}='{original_df.iloc[index][primary_key]}'"
+                            # Agregar condición adicional si column_name no es el campo clave
+                            if column_name != primary_key:
+                                if row[column_name] == 'None':  # Si el valor es None, poner NULL
+                                    where_clause += f" AND {column_name} IS NULL"
+                                else:
+                                    where_clause += f" AND {column_name}='{row[column_name]}'"
+                            script += f"UPDATE {table_name} SET {set_clause} WHERE {where_clause};\n"
 
                 else:
                     # Si no se especifica column_name, recorre todas las columnas para detectar cambios
@@ -242,6 +262,10 @@ class DatabaseController:
                         where_clause = " AND ".join(where_conditions)
                         script += f"UPDATE {table_name} SET {set_clause} WHERE {where_clause};\n"
 
+                # Actualizar el progreso si se proporciona un callback
+                if progress_callback:
+                    progress_callback(int((index + 1) / total_rows * 100))
+
             # Guardar el script en el archivo especificado
             sql_file_name = f"{table_name}_Depurado.sql"
             full_file_path = os.path.join(os.path.dirname(save_path), sql_file_name)
@@ -253,6 +277,7 @@ class DatabaseController:
         except Exception as e:
             print(f"Error en generate_sql_script: {str(e)}")
             return None
+
 
 
 

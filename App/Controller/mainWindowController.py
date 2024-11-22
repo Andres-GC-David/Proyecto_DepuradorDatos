@@ -6,6 +6,9 @@ from PyQt6.QtWidgets import QMessageBox
 import pandas as pd
 from App.Controller.ruleDepurationController import RuleDepurationController  
 from PyQt6.QtWidgets import QFileDialog
+from PyQt6.QtCore import QThread, pyqtSignal
+from App.View.loadingDialog import LoadingDialog
+from App.Controller.progressWorker import ProgressWorker
 
 class MainWindowController:
     
@@ -24,24 +27,73 @@ class MainWindowController:
                 msg_box.setStandardButtons(QtWidgets.QMessageBox.StandardButton.Ok)
                 msg_box.exec()
                 return
-            
-            self.selected_rules = self._extract_rules_with_parameters(parameter_table)
+
+            #self.selected_rules = self._extract_rules_with_parameters(parameter_table)
+            print(self.selected_rules, "desde mainWindow")
             df = self._extract_table_data_as_dataframe(ui_main_window.actualDataContainer)
             rules = self._extract_rules_with_parameters(parameter_table)
-            try:
-                modified_df = self.rule_depuration_controller.apply_rules(df, rules, ui_main_window.centralwidget)
-                self._populate_table_with_data(ui_main_window.newDataContainer.findChild(QtWidgets.QTableWidget), modified_df)
-            except Exception as depuration_error:
-                # Captura cualquier error de depuración y muestra un mensaje
-                QtWidgets.QMessageBox.warning(
-                    ui_main_window.centralwidget, 
-                    "Error en Depuración", 
-                    f"Error al aplicar depuración: {str(depuration_error)}"
-                )
-            
+
+            # Mostrar el diálogo de carga
+            self.loading_dialog = LoadingDialog(ui_main_window.centralwidget)
+            self.loading_dialog.show()
+
+            # Crear el ProgressWorker para manejar la barra de progreso
+            self.progress_worker = ProgressWorker(simulated=False)
+            self.progress_worker.progress.connect(self.loading_dialog.update_progress)
+
+            # Crear un hilo para manejar la depuración
+            self.thread = QThread()
+            self.progress_worker.moveToThread(self.thread)
+
+            # Conectar señales
+            self.thread.started.connect(
+                lambda: self._process_depuration(df, rules, ui_main_window)
+            )
+            self.progress_worker.finished.connect(self.on_depuration_finished)
+            self.progress_worker.error.connect(self.on_depuration_error)
+
+            # Iniciar el hilo
+            self.thread.start()
 
         except Exception as e:
             QtWidgets.QMessageBox.warning(ui_main_window.centralwidget, "Error", f"Error al aplicar depuración: {str(e)}")
+
+    def _process_depuration(self, df, rules, ui_main_window):
+        try:
+            # Llamar al método de depuración con progreso
+            modified_df = self.rule_depuration_controller.apply_rules_with_progress(
+                df, rules, self.progress_worker.emit_progress
+            )
+            self._populate_table_with_data(
+                ui_main_window.newDataContainer.findChild(QtWidgets.QTableWidget), modified_df
+            )
+            self.progress_worker.emit_finished("Depuración completada exitosamente.")
+        except Exception as e:
+            self.progress_worker.emit_error(str(e))
+            
+    def on_depuration_finished(self, message):
+        self.loading_dialog.close()
+        self.thread.quit()
+        self.thread.wait()
+
+        QtWidgets.QMessageBox.information(
+            None,
+            "Éxito",
+            message,
+        )
+
+    def on_depuration_error(self, error_message):
+        self.loading_dialog.close()
+        self.thread.quit()
+        self.thread.wait()
+
+        QtWidgets.QMessageBox.critical(
+            None,
+            "Error",
+            f"Error al aplicar la depuración: {error_message}",
+        )
+
+
 
     def download_data(self, ui_main_window):
         try:
@@ -122,43 +174,99 @@ class MainWindowController:
 
     def _download_sql_script(self, ui_main_window, db_name, save_path):
         try:
+            # Mostrar el diálogo de carga
+            self.loading_dialog = LoadingDialog(ui_main_window.centralwidget)
+            self.loading_dialog.show()
+
+            # Crear el ProgressWorker para manejar la barra de progreso
+            self.progress_worker = ProgressWorker(simulated=False)
+            self.progress_worker.progress.connect(self.loading_dialog.update_progress)
+
+            # Crear un hilo para generar el script SQL
+            self.thread = QThread()
+            self.progress_worker.moveToThread(self.thread)
+
+            # Conectar señales para manejar el progreso
+            self.thread.started.connect(
+                lambda: self._generate_sql_script(ui_main_window, db_name, save_path)
+            )
+            self.progress_worker.finished.connect(self.on_sql_generation_finished)
+            self.progress_worker.error.connect(self.on_sql_generation_error)
+
+            # Iniciar el hilo
+            self.thread.start()
+
+        except Exception as e:
+            QtWidgets.QMessageBox.warning(
+                ui_main_window.centralwidget,
+                "Error",
+                f"Error al iniciar la generación del script SQL: {str(e)}",
+            )
+
+
+    def _generate_sql_script(self, ui_main_window, db_name, save_path):
+        try:
+            # Obtener los datos originales y modificados
             original_df = self._extract_table_data_as_dataframe(ui_main_window.actualDataContainer)
             modified_df = self._extract_table_data_as_dataframe(ui_main_window.newDataContainer)
 
+            # Validaciones previas
             if original_df.empty or modified_df.empty:
                 raise ValueError("Los datos originales o modificados están vacíos.")
             if list(original_df.columns) != list(modified_df.columns):
                 raise ValueError("Las columnas de los datos originales y modificados no coinciden.")
+            
             table_name_item = ui_main_window.summayOfDataTable.item(0, 2)
             if table_name_item is None or not table_name_item.text().strip():
                 raise ValueError("No se encontró el nombre de la tabla.")
-
             table_name = table_name_item.text().strip()
 
-            # Verifica si "Estandarización de Cédulas" está en selected_rules y extrae el nombre de la columna
             column_name = ui_main_window.summaryOfParameterTable.item(0, 1).text().strip()
-            
+
             if column_name and ', ' in column_name:
-                ruleSelectedForDepuration, columnsSelectedForDepuration = column_name.split(', ')
-                if ruleSelectedForDepuration != "Estandarizacion de Cedulas":
-                    columnsSelectedForDepuration = None
+                _, columnsSelectedForDepuration = column_name.split(', ')
             else:
-                ruleSelectedForDepuration = column_name
                 columnsSelectedForDepuration = None
 
-            sql_file_name = self.database_controller.generate_sql_script(db_name, table_name, original_df, modified_df, save_path, columnsSelectedForDepuration)
+            # Llamar a la generación del script SQL con progreso
+            sql_file_name = self.database_controller.generate_sql_script(
+                db_name,
+                table_name,
+                original_df,
+                modified_df,
+                save_path,
+                column_name=columnsSelectedForDepuration,
+                progress_callback=self.progress_worker.emit_progress,  # Enviar progreso
+            )
 
-            msg_box = QMessageBox()
-            msg_box.setIcon(QMessageBox.Icon.Information)
-            msg_box.setWindowTitle("Éxito")
-            msg_box.setText(f"Script SQL generado en direccion: {sql_file_name}")
-            msg_box.exec()
+            self.progress_worker.emit_finished(sql_file_name)
         except Exception as e:
-            msg_box = QMessageBox()
-            msg_box.setIcon(QMessageBox.Icon.Warning)
-            msg_box.setWindowTitle("Error")
-            msg_box.setText(f"Error al generar el script SQL: {str(e)}")
-            msg_box.exec()
+            self.progress_worker.emit_error(str(e))
+
+
+    def on_sql_generation_finished(self, sql_file_name):
+        self.loading_dialog.close()
+        self.thread.quit()
+        self.thread.wait()
+
+        QtWidgets.QMessageBox.information(
+            None,
+            "Éxito",
+            f"Script SQL generado correctamente: {sql_file_name}",
+        )
+
+
+    def on_sql_generation_error(self, error_message):
+        self.loading_dialog.close()
+        self.thread.quit()
+        self.thread.wait()
+
+        QtWidgets.QMessageBox.critical(
+            None,
+            "Error",
+            f"Error al generar el script SQL: {error_message}",
+        )
+
 
     def _extract_table_data_as_list(self, table_widget):
         data = []

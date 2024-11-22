@@ -1,6 +1,9 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from App.Controller.databaseController import DatabaseController
 from App.View.databaseManagement import Ui_DataBaseManagementDialog
+from App.Controller.query_worker import QueryWorker  # Ya existe
+from App.Controller.progressWorker import ProgressWorker  # Importar ProgressWorker
+from App.View.loadingDialog import LoadingDialog  # Importar LoadingDialog
 from PyQt6.QtCore import Qt
 
 class Ui_Dialog(object):
@@ -10,6 +13,7 @@ class Ui_Dialog(object):
         self.main_window = main_window  # Mantener referencia a MainWindow
 
     def setupUi(self, Dialog):
+        self.current_dialog = Dialog
         Dialog.setObjectName("Dialog")
         Dialog.resize(601, 480)
         Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
@@ -121,6 +125,23 @@ class Ui_Dialog(object):
         self.tableSelectionContainer.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
         self.tableSelectionContainer.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.tableSelectionContainer.setObjectName("tableSelectionContainer")
+        
+        self.progress_bar = QtWidgets.QProgressBar(parent=Dialog)
+        self.progress_bar.setGeometry(QtCore.QRect(50, 450, 500, 20))  # Ajusta según el diseño
+        self.progress_bar.setStyleSheet("""
+            QProgressBar {
+                border: 1px solid black;
+                border-radius: 5px;
+                background-color: rgb(58, 99, 140);
+                color: white;
+            }
+            QProgressBar::chunk {
+                background-color: rgb(255, 255, 255);
+            }
+        """)
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setVisible(False)  # Oculta inicialmente
 
         # Etiqueta de selección de tablas
         self.tableSelectionLabel = QtWidgets.QLabel(parent=self.tableSelectionContainer)
@@ -216,7 +237,7 @@ class Ui_Dialog(object):
     def add_table_to_main_window(self, Dialog):
         selected_row = self.tableOptionTable.currentRow()
         if selected_row == -1:
-            QtWidgets.QMessageBox.warning(None, "Advertencia", "Por favor, seleccione una tabla antes de continuar.")
+            QtWidgets.QMessageBox.warning(None, "Advertencia", "Por favor, selecciona una tabla.")
             return
 
         selected_table = self.tableOptionTable.item(selected_row, 0).text()
@@ -225,34 +246,61 @@ class Ui_Dialog(object):
 
         if selected_table and selected_database:
             try:
-                connection_params = self.main_window.connection_params 
+                connection_params = self.main_window.connection_params
                 if connection_params:
                     self.databaseController.set_credentials(
-                        connection_params['username'], 
-                        connection_params['password'], 
-                        connection_params['host'], 
-                        connection_params['port'], 
+                        connection_params['username'],
+                        connection_params['password'],
+                        connection_params['host'],
+                        connection_params['port'],
                         connection_params['service_name']
                     )
                     self.databaseController.connect()
 
-                # Obtener los datos y encabezados desde el controlador
-                data, column_names = self.databaseController.get_table_data(selected_database, selected_table)
+                # Mostrar el diálogo de carga
+                self.loading_dialog = LoadingDialog(self.main_window)
+                self.loading_dialog.show()
 
-                # Muestra los datos en la tabla actualDataTable en MainWindow
-                self.main_window.load_data_in_actual_table(data, column_names)
-
-                # Actualiza la tabla de resumen en MainWindow
-                self.main_window.summayOfDataTable.setRowCount(0)
-                self.main_window.summayOfDataTable.setRowCount(1)
-                self.main_window.summayOfDataTable.setItem(0, 0, QtWidgets.QTableWidgetItem("Base de Datos"))
-                self.main_window.summayOfDataTable.setItem(0, 1, QtWidgets.QTableWidgetItem("Tabla"))
-                self.main_window.summayOfDataTable.setItem(0, 2, QtWidgets.QTableWidgetItem(selected_table))
-
-                Dialog.close()
+                # Iniciar el hilo para la consulta
+                self.query_worker = QueryWorker(self.databaseController, selected_database, selected_table)
+                self.query_worker.progress.connect(self.loading_dialog.update_progress)
+                self.query_worker.finished.connect(self.on_query_finished)
+                self.query_worker.error.connect(self.on_query_error)
+                self.query_worker.start()
 
             except Exception as e:
                 QtWidgets.QMessageBox.critical(None, "Error", f"Error al cargar datos: {str(e)}")
+
+
+    def on_query_finished(self, result):
+        self.loading_dialog.close()  # Cerrar diálogo de carga
+        data, column_names = result
+
+        # Cargar datos en la tabla principal
+        self.main_window.load_data_in_actual_table(data, column_names)
+
+        # Actualizar tabla resumen
+        selected_table = self.tableOptionTable.item(self.tableOptionTable.currentRow(), 0).text()
+        self.main_window.summayOfDataTable.setRowCount(0)
+        self.main_window.summayOfDataTable.setRowCount(1)
+        self.main_window.summayOfDataTable.setItem(0, 0, QtWidgets.QTableWidgetItem("Base de Datos"))
+        self.main_window.summayOfDataTable.setItem(0, 1, QtWidgets.QTableWidgetItem("Tabla"))
+        self.main_window.summayOfDataTable.setItem(0, 2, QtWidgets.QTableWidgetItem(selected_table))
+
+        # Mostrar mensaje de éxito
+        QtWidgets.QMessageBox.information(None, "Éxito", "Datos cargados correctamente.")
+
+        # Cerrar el diálogo
+        self.current_dialog.close()  # Usamos la referencia correcta
+
+
+
+
+    def on_query_error(self, error_message):
+        self.loading_dialog.close()
+        QtWidgets.QMessageBox.critical(None, "Error", f"Error al cargar datos: {error_message}")
+
+
 
 
 

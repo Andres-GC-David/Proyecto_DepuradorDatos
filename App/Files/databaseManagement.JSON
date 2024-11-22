@@ -3,9 +3,9 @@
         "cl_personas": {
             "clave": "ID_PERSONA",
             "campos": [
-                "ID_PERSONA",
                 "NOMBRES",
-                "IDENTIFICACION"
+                "IDENTIFICACION",
+                "REGISTRO"
             ]
         },
         "cl_ubicaciones": {
@@ -35,7 +35,7 @@
             ]
         },
         "proveedor": {
-            "clave": "E_MAIL",
+            "clave": "PROVEEDOR",
             "campos": [
                 "E_MAIL",
                 "TELEFONO1",

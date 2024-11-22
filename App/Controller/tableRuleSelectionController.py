@@ -100,6 +100,7 @@ class TableRuleSelectionController:
 
             # Update the selected rules in the main window controller
             self.main_window.controller.selected_rules = selected_rules
+            print(self.main_window.controller.selected_rules, "desde tableRuleSelectionController")
 
         except Exception as e:
             QtWidgets.QMessageBox.warning(None, "Error", str(e))
