@@ -10,7 +10,7 @@ class Ui_RuleActionEmailDialog(object):
     def setupUi(self, Dialog, rule_name):
         Dialog.setObjectName("Dialog")
         Dialog.resize(500, 460)  # Aumentamos el tamaño para hacer espacio al input
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         self.titleLabel = QtWidgets.QLabel(Dialog)
         self.titleLabel.setGeometry(QtCore.QRect(20, 20, 450, 40))

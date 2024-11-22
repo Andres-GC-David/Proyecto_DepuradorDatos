@@ -19,7 +19,7 @@ class RuleConfiguration(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("RuleConfigurationDialog")
         Dialog.resize(800, 600)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
         Dialog.setWindowTitle("Gestión de Reglas de Negocio")
 
         # Cambiar el título usando geometry
@@ -37,9 +37,9 @@ class RuleConfiguration(object):
         self.addRuleButton.setStyleSheet("""
             QPushButton {
                 background-color: white;
-                color: rgb(58, 99, 140);
+                color: rgb(8,172,20);
                 border-radius: 10px;
-                border: 2px solid rgb(58, 99, 140);
+                border: 2px solid rgb(8,172,20);
                 padding: 5px 10px;
             }
         """)
@@ -87,7 +87,7 @@ class RuleConfiguration(object):
     def add_section_title(self, title):
         section_title = QtWidgets.QLabel(title)
         section_title.setFont(QtGui.QFont("Segoe UI", 14, QtGui.QFont.Weight.Bold))
-        section_title.setStyleSheet("color: rgb(58, 99, 140);")
+        section_title.setStyleSheet("color: rgb(8,172,20);")
         section_title.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.rules_container.addWidget(section_title)
 
@@ -136,7 +136,7 @@ class RuleConfiguration(object):
         return widget
 
 
-    def create_button(self, text, color="rgb(58, 99, 140)"):
+    def create_button(self, text, color="rgb(8,172,20)"):
         button = QtWidgets.QPushButton(text)
         button.setFont(QtGui.QFont("Segoe UI", 10, QtGui.QFont.Weight.Bold))
         button.setStyleSheet(f"background-color: {color}; color: white;")

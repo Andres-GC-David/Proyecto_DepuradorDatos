@@ -10,7 +10,7 @@ class Ui_RuleActionDialog(object):
     def setupUi(self, Dialog, rule_name):
         Dialog.setObjectName("Dialog")
         Dialog.resize(600, 700)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         # Título principal
         self.titleLabel = QtWidgets.QLabel(Dialog)

@@ -13,7 +13,7 @@ class Ui_TableColumnSelectionDialog(object):
         self.Dialog = Dialog
         Dialog.setWindowTitle(f"Seleccionar Columna - {self.table_name}")
         Dialog.resize(400, 300)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         # Etiqueta: Selección de columna
         self.columnLabel = QtWidgets.QLabel(Dialog)

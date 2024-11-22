@@ -22,7 +22,7 @@ class Ui_DataBaseManagementDialog(object):
         Dialog.setObjectName("Dialog")
         Dialog.resize(650, 700)
         Dialog.setWindowTitle("Gestión de Esquemas y Tablas")
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         # Título
         self.titleLabel = QtWidgets.QLabel("Gestión de Esquemas y Tablas", Dialog)

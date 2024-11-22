@@ -13,7 +13,7 @@ class Ui_TableColumnManagementDialog(object):
         self.Dialog = Dialog
         Dialog.setWindowTitle(f"Modificar Columnas - {self.table_name}")
         Dialog.resize(600, 400)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         # Etiqueta: Todas las columnas
         self.allColumnsLabel = QtWidgets.QLabel(Dialog)

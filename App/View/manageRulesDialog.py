@@ -15,7 +15,7 @@ class Ui_ManageRulesDialog(object):
         self.Dialog = Dialog
         Dialog.setWindowTitle("Gestionar Reglas")
         Dialog.resize(600, 400)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         self.typeLabel = QtWidgets.QLabel(Dialog)
         self.typeLabel.setText("Tipo de Archivo o Tabla:")

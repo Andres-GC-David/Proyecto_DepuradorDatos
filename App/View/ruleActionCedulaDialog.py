@@ -9,7 +9,7 @@ class Ui_RuleActionCedulaDialog(object):
     def setupUi(self, Dialog, rule_name):
         Dialog.setObjectName("Dialog")
         Dialog.resize(500, 500)  
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         self._create_title(Dialog, rule_name)
         self._create_cedula_options(Dialog)

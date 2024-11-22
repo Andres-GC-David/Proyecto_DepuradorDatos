@@ -16,14 +16,14 @@ class Ui_Dialog(object):
         self.current_dialog = Dialog
         Dialog.setObjectName("Dialog")
         Dialog.resize(601, 480)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         # Agregar QMenuBar
         self.menuBar = QtWidgets.QMenuBar(Dialog)
         self.menuBar.setGeometry(QtCore.QRect(0, 0, 601, 35))  # Ajustar tamaño de la barra
         self.menuBar.setStyleSheet("""
             QMenuBar {
-                background-color: rgb(58, 99, 140);  /* Fondo de la barra de menú */
+                background-color: rgb(8,172,20);  /* Fondo de la barra de menú */
                 color: rgb(255, 255, 255);  /* Texto blanco en la barra */
                 font-weight: bold;
             }
@@ -100,7 +100,7 @@ class Ui_Dialog(object):
         font.setBold(True)
         self.databaseSelectionLabel.setFont(font)
         self.databaseSelectionLabel.setStyleSheet("color: rgb(255, 255, 255);\n"
-                                                "background-color: rgb(58, 99, 140);\n"
+                                                "background-color: rgb(8,172,20);\n"
                                                 "border-radius: 4px;")
         self.databaseSelectionLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.databaseSelectionLabel.setObjectName("databaseSelectionLabel")
@@ -132,7 +132,7 @@ class Ui_Dialog(object):
             QProgressBar {
                 border: 1px solid black;
                 border-radius: 5px;
-                background-color: rgb(58, 99, 140);
+                background-color: rgb(8,172,20);
                 color: white;
             }
             QProgressBar::chunk {
@@ -152,7 +152,7 @@ class Ui_Dialog(object):
         font.setBold(True)
         self.tableSelectionLabel.setFont(font)
         self.tableSelectionLabel.setStyleSheet("color: rgb(255, 255, 255);\n"
-                                            "background-color: rgb(58, 99, 140);\n"
+                                            "background-color: rgb(8,172,20);\n"
                                             "border-radius: 4px;")
         self.tableSelectionLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.tableSelectionLabel.setObjectName("tableSelectionLabel")

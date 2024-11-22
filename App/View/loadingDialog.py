@@ -32,7 +32,7 @@ class LoadingDialog(QtWidgets.QDialog):
                 background: rgb(220, 220, 220);
             }
             QProgressBar::chunk {
-                background: rgb(58, 99, 140);
+                background: rgb(8,172,20);
                 width: 10px;
             }
         """)

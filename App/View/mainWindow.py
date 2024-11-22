@@ -118,7 +118,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold)
         button.setFont(font)
         button.setFixedSize(211, 41)
-        button.setStyleSheet("background-color: rgb(76,188,84);\n"
+        button.setStyleSheet("background-color: rgb(8,172,20);\n"
                              "color: rgb(255, 255, 255);\n"
                              "border-radius: 4px;\n")
         button.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -149,7 +149,7 @@ class Ui_MainWindow(object):
 
         label = QtWidgets.QLabel(label_text)
         label.setFont(QtGui.QFont("Segoe UI", 20, QtGui.QFont.Weight.Bold))
-        label.setStyleSheet("color: rgb(76,188,84);")
+        label.setStyleSheet("color: rgb(8,172,20);")
         label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(label)
 

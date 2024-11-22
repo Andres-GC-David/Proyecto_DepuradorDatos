@@ -15,14 +15,14 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(500, 300)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         # Crear la barra de menú
         self.menuBar = QtWidgets.QMenuBar(Dialog)
         self.menuBar.setGeometry(QtCore.QRect(0, 0, 500, 28))  # Ajustar tamaño de la barra
         self.menuBar.setStyleSheet("""
             QMenuBar {
-                background-color: rgb(58, 99, 140);  /* Fondo de la barra de menú */
+                background-color: rgb(8,172,20);  /* Fondo de la barra de menú */
                 color: rgb(255, 255, 255);  /* Texto blanco en la barra */
                 font-weight: bold;
             }
@@ -100,7 +100,7 @@ class Ui_Dialog(object):
         font.setPointSize(12)
         font.setBold(True)
         self.fileSelectionLabel.setFont(font)
-        self.fileSelectionLabel.setStyleSheet("color: rgb(58, 99, 140);\n"
+        self.fileSelectionLabel.setStyleSheet("color: rgb(8,172,20);\n"
                                             "background-color: white;\n"
                                             "border-radius: 10px;")
         self.fileSelectionLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -110,7 +110,7 @@ class Ui_Dialog(object):
         self.fileSelectionButton = QtWidgets.QPushButton("Buscar", parent=self.fileSelectionContainer)
         self.fileSelectionButton.setGeometry(QtCore.QRect(200, 40, 170, 41))
         self.fileSelectionButton.setFont(QtGui.QFont("Segoe UI", 12))
-        self.fileSelectionButton.setStyleSheet("background-color: rgb(58, 99, 140);\n"
+        self.fileSelectionButton.setStyleSheet("background-color: rgb(8,172,20);\n"
                                             "color: white;\n"
                                             "border-radius: 4px;\n")
         self.fileSelectionButton.setCursor(Qt.CursorShape.PointingHandCursor)

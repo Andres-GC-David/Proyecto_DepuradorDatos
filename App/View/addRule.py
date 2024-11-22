@@ -11,7 +11,7 @@ class AddRule(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("RuleConfigurationDialog")
         Dialog.resize(620, 520)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
         Dialog.setWindowTitle("Configuración de Reglas de Negocio")
         
         self.main_layout = QtWidgets.QVBoxLayout(Dialog)
@@ -110,13 +110,13 @@ class AddRule(object):
 
         self.saveButton = QtWidgets.QPushButton("Guardar", Dialog)
         self.saveButton.setFont(QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold))
-        self.saveButton.setStyleSheet("background-color: rgb(58, 99, 140); color: white;")
+        self.saveButton.setStyleSheet("background-color: white; color: black;")
         self.saveButton.clicked.connect(self.save_rule)
         self.buttonLayout.addWidget(self.saveButton)
 
         self.cancelButton = QtWidgets.QPushButton("Cancelar", Dialog)
         self.cancelButton.setFont(QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold))
-        self.cancelButton.setStyleSheet("background-color: rgb(58, 99, 140); color: white;")
+        self.cancelButton.setStyleSheet("background-color: red; color: white;")
         self.cancelButton.clicked.connect(Dialog.reject)
         self.buttonLayout.addWidget(self.cancelButton)
 
@@ -141,7 +141,7 @@ class AddRule(object):
         help_label = QtWidgets.QLabel(content_widget)
         help_label.setText(self.get_help_text())
         help_label.setFont(QtGui.QFont("Segoe UI", 10))
-        help_label.setStyleSheet("color: rgb(58, 99, 140);")
+        help_label.setStyleSheet("color: black;")
         help_label.setWordWrap(True)
         help_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 

@@ -18,7 +18,7 @@ class Ui_ConnectionDialog(QtCore.QObject):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(400, 300)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         self.connectionLabel = QtWidgets.QLabel(Dialog)
         self.connectionLabel.setGeometry(QtCore.QRect(50, 20, 300, 30))

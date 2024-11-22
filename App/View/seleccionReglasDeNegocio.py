@@ -21,7 +21,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog, summayOfDataTable):
         Dialog.setObjectName("Dialog")
         Dialog.resize(907, 775)
-        Dialog.setStyleSheet("background-color: rgb(58, 99, 140);")
+        Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         self.ruleSelectionWindowLabel = QtWidgets.QLabel(parent=Dialog)
         self.ruleSelectionWindowLabel.setGeometry(QtCore.QRect(110, 20, 671, 51))
@@ -188,7 +188,7 @@ class Ui_Dialog(object):
         font.setBold(True)
         self.addRulesButton.setFont(font)
         self.addRulesButton.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
-        self.addRulesButton.setStyleSheet("background-color: rgb(58, 99, 140);\n"
+        self.addRulesButton.setStyleSheet("background-color: rgb(8,172,20);\n"
                                           "color: rgb(255, 255, 255);\n")
         self.addRulesButton.setObjectName("addRulesButton")
         self.addRulesButton.clicked.connect(self.add_selected_options)
