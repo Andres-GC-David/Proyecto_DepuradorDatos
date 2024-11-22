@@ -13,6 +13,7 @@ executables = [
 
 include_files = [
     ("App/Files", "App/Files"),  
+    ("App/Images", "App/Images"),  
 ]
 
 build_options = {
