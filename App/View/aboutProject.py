@@ -43,6 +43,7 @@ class Ui_AboutProject(object):
             "<b>Desarrollador:</b> Andres David Gutierrez Corales<br>"
             "<b>Nombre:</b> DepuradorDatosApp<br>"
             "<b>Versión:</b> 1.0<br>"
+            "<b>Desarrollado en:</b> Python 3.11.3<br>"
             "<b>Fecha de lanzamiento:</b> 21-11-2024<br>"
             "<b>Contacto:</b> <a href='mailto:adavid0902@gmail.com'>adavid0902@gmail.com</a><br>"
         )
