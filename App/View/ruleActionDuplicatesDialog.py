@@ -12,7 +12,6 @@ class Ui_RuleActionDuplicatesDialog(object):
         Dialog.resize(520, 380) 
         Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
-        # Título
         self.titleLabel = QtWidgets.QLabel(Dialog)
         self.titleLabel.setGeometry(QtCore.QRect(25, 20, 470, 40))
         font = QtGui.QFont()

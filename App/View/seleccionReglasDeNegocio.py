@@ -88,7 +88,7 @@ class Ui_Dialog(object):
         self.dataSelectedTable.setRowHeight(2, 40)
 
         self.ruleOptionsTable = QtWidgets.QTableWidget(parent=self.ruleOptionContainer)
-        self.ruleOptionsTable.setGeometry(QtCore.QRect(470, 80, 281, 151))  # Con 5px de espacio horizontal entre las tablas
+        self.ruleOptionsTable.setGeometry(QtCore.QRect(470, 80, 281, 151))  
         self.ruleOptionsTable.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                             "color: rgb(0, 0, 0);\n"
                                             "border: 1px solid black;")
@@ -124,8 +124,8 @@ class Ui_Dialog(object):
                                                 "border: 1px solid black;")
         self.summaryOfOptionsTable.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
         self.summaryOfOptionsTable.setObjectName("summaryOfOptionsTable")
-        self.summaryOfOptionsTable.setColumnCount(4)  # Cambiar a 4 columnas para incluir el botón "Eliminar"
-        self.summaryOfOptionsTable.setHorizontalHeaderLabels(["Nombre Modificación", "Modificación", "Columna", ""])  # Añadir columna "Eliminar"
+        self.summaryOfOptionsTable.setColumnCount(4) 
+        self.summaryOfOptionsTable.setHorizontalHeaderLabels(["Nombre Modificación", "Modificación", "Columna", ""]) 
         self.summaryOfOptionsTable.setRowCount(0)
 
         item = QtWidgets.QTableWidgetItem()
@@ -138,9 +138,8 @@ class Ui_Dialog(object):
         self.summaryOfOptionsTable.setColumnWidth(0, 399)
         self.summaryOfOptionsTable.setColumnWidth(1, 400)
         
-        # Nueva etiqueta para columnsOptionsTable
         self.columnsOptionsLabel = QtWidgets.QLabel(parent=self.ruleOptionContainer)
-        self.columnsOptionsLabel.setGeometry(QtCore.QRect(290, 20, 161, 41))  # Ajustado para estar alineado con las otras etiquetas
+        self.columnsOptionsLabel.setGeometry(QtCore.QRect(290, 20, 161, 41))  
         font = QtGui.QFont()
         font.setFamily("Segoe UI")
         font.setPointSize(18)
@@ -150,7 +149,6 @@ class Ui_Dialog(object):
         self.columnsOptionsLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.columnsOptionsLabel.setObjectName("columnsOptionsLabel")
         
-        # Nueva tabla de selección de columnas
         self.columnsOptionsTable = QtWidgets.QTableWidget(parent=self.ruleOptionContainer)
         self.columnsOptionsTable.setGeometry(QtCore.QRect(290, 80, 161, 151)) 
         self.columnsOptionsTable.setStyleSheet("background-color: rgb(255, 255, 255);\n"
@@ -213,30 +211,28 @@ class Ui_Dialog(object):
         print(f"selected_rules: {selected_rules}")
         existing_rules = set()
 
-        # Evitar reglas duplicadas en la tabla de opciones
         for row in range(self.summaryOfOptionsTable.rowCount()):
             rule_name = self.summaryOfOptionsTable.item(row, 0).text()
             column_name = self.summaryOfOptionsTable.item(row, 1).text()
             existing_rules.add((rule_name, column_name))
 
-        # Solo agregar reglas que no estén ya presentes en la tabla
         if selected_rules:
             for rule in selected_rules:
-                if (rule[0], rule[1]) not in existing_rules:  # Si la regla no está en la tabla
+                if (rule[0], rule[1]) not in existing_rules:  
                     row_position = self.summaryOfOptionsTable.rowCount()
                     self.summaryOfOptionsTable.insertRow(row_position)
                     self.summaryOfOptionsTable.setItem(row_position, 0, QtWidgets.QTableWidgetItem(rule[0]))
                     self.summaryOfOptionsTable.setItem(row_position, 1, QtWidgets.QTableWidgetItem(rule[1]))
                     if isinstance(rule[2], dict):
-                        description = str(rule[2])  # Convertir el dict a una cadena legible
+                        description = str(rule[2])  
                     else:
-                        description = rule[2]  # Asumimos que es una cadena
+                        description = rule[2]  
 
-                    self.summaryOfOptionsTable.setItem(row_position, 2, QtWidgets.QTableWidgetItem(description))  # Columna 2: Descripción de la regla
+                    self.summaryOfOptionsTable.setItem(row_position, 2, QtWidgets.QTableWidgetItem(description))  
                     delete_button = QtWidgets.QPushButton("Eliminar")
                     delete_button.setStyleSheet("background-color: red; color: white;")
                     delete_button.setFont(QtGui.QFont("Segoe UI", 10, QtGui.QFont.Weight.Bold))
-                    delete_button.clicked.connect(lambda checked, row=row_position: self.controller.remove_rule(self.summaryOfOptionsTable, row))
+                    delete_button.clicked.connect(lambda: self.rule_selection_controller.remove_rule(self.summaryOfOptionsTable, row_position))
                     self.summaryOfOptionsTable.setCellWidget(row_position, 3, delete_button)
 
         self.retranslateUi(Dialog)
@@ -352,22 +348,21 @@ class Ui_Dialog(object):
             if ui.get_accepted():
                 description = ui.get_description()
                 
-                # Nueva lógica para abrir el diálogo de selección de columna usando el método get_schema_by_table
-                table_name_item = self.dataSelectedTable.item(2, 0)  # Obtener el nombre de la tabla seleccionada
+                table_name_item = self.dataSelectedTable.item(2, 0)  
                 table_name = table_name_item.text() if table_name_item else None
 
                 if table_name:
                     try:
-                        schema_name = self.database_controller.get_schema_by_table(table_name)  # Usa el método para obtener el esquema
+                        schema_name = self.database_controller.get_schema_by_table(table_name)  
                         column_dialog = QtWidgets.QDialog(self.main_window)
                         column_selection_ui = Ui_TableColumnSelectionDialog(schema_name, table_name, self.database_controller)
                         column_selection_ui.setupUi(column_dialog)
                         if column_dialog.exec() == QtWidgets.QDialog.DialogCode.Accepted and column_selection_ui.selected_column:
                             column_name = column_selection_ui.selected_column
                             description = ui.get_description()
-                            description += f", {column_name}"  # Agrega la columna al nombre de la regla
+                            description += f", {column_name}"  
                         else:
-                            return  # Salir si no hay columna seleccionada
+                            return  
                     except ValueError as e:
                         QtWidgets.QMessageBox.warning(self.main_window, "Error", str(e))
                         return

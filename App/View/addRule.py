@@ -24,13 +24,12 @@ class AddRule(object):
         self.main_layout.addWidget(self.titleLabel)
         
         self.loadExampleButton = QtWidgets.QPushButton(Dialog)
-        self.loadExampleButton.setGeometry(QtCore.QRect(10, 10, 140, 30))  # Arriba a la izquierda
+        self.loadExampleButton.setGeometry(QtCore.QRect(10, 10, 140, 30))  
         self.loadExampleButton.setText("Cargar Ejemplo")
         self.loadExampleButton.setFont(QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold))
         self.loadExampleButton.setStyleSheet("background-color: white; color: black; border-radius: 5px;")
-        self.loadExampleButton.clicked.connect(self.load_example)  # Conectar el botón a la función para cargar el ejemplo
+        self.loadExampleButton.clicked.connect(self.load_example)  
         
-        # Help button in the top-right corner
         self.helpButton = QtWidgets.QPushButton(Dialog)
         self.helpButton.setGeometry(QtCore.QRect(580, 10, 30, 30))
         self.helpButton.setText("?")
@@ -129,15 +128,12 @@ class AddRule(object):
         help_dialog.resize(600, 400)
         help_dialog.setStyleSheet("background-color: rgb(255, 255, 255);")
 
-        # Create a scroll area
         scroll_area = QtWidgets.QScrollArea(help_dialog)
         scroll_area.setWidgetResizable(True)
 
-        # Create a widget to hold the content
         content_widget = QtWidgets.QWidget()
         layout = QtWidgets.QVBoxLayout(content_widget)
 
-        # Help label with the content
         help_label = QtWidgets.QLabel(content_widget)
         help_label.setText(self.get_help_text())
         help_label.setFont(QtGui.QFont("Segoe UI", 10))
@@ -223,7 +219,6 @@ class AddRule(object):
         QtWidgets.QApplication.activeWindow().close()
         
     def load_example(self):
-        """ Carga un ejemplo predefinido en los campos de la interfaz """
         example_name = "Valida Correos"
         example_description = "Convierte a nulo correos que no cumplen validación de sintaxis"
         example_code = ("data[column] = data[column].apply(lambda x: x if re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$', str(x))"
@@ -234,43 +229,32 @@ class AddRule(object):
         self.codeInput.setPlainText(example_code)
         
     def validate_rule_name(self):
-        """ Valida que el nombre de la regla no contenga caracteres peligrosos ni palabras reservadas de SQL. """
         rule_name = self.nameInput.text()
 
-        # No permitir caracteres peligrosos
         if re.search(r"[\"';]", rule_name) or "--" in rule_name:
             QtWidgets.QMessageBox.warning(None, "Advertencia", "El nombre de la regla contiene caracteres no permitidos.")
             self.nameInput.clear()
 
-        # No permitir palabras clave SQL
         if re.search(r"\b(SELECT|INSERT|DELETE|DROP|UPDATE|ALTER)\b", rule_name, re.IGNORECASE):
             QtWidgets.QMessageBox.warning(None, "Advertencia", "El nombre de la regla contiene palabras clave SQL no permitidas.")
             self.nameInput.clear()
 
-        # Limitar la longitud del nombre de la regla
         if len(rule_name) > 50:
             QtWidgets.QMessageBox.warning(None, "Advertencia", "El nombre de la regla es demasiado largo (máximo 50 caracteres).")
             self.nameInput.clear()
 
-
-    # Validar descripción de la regla
     def validate_description(self):
-        """ Valida que la descripción no contenga caracteres peligrosos ni palabras reservadas de SQL. """
         description = self.descriptionInput.toPlainText()
 
-        # No permitir caracteres peligrosos
         if re.search(r"[\"';]", description) or "--" in description:
             QtWidgets.QMessageBox.warning(None, "Advertencia", "La descripción contiene caracteres no permitidos.")
             self.descriptionInput.clear()
 
-        # Limitar la longitud de la descripción
         if len(description) > 500:
             QtWidgets.QMessageBox.warning(None, "Advertencia", "La descripción es demasiado larga (máximo 500 caracteres).")
             self.descriptionInput.clear()
 
-    # Validar código de la regla
     def validate_code(self):
-        """ Valida que el código de la regla no contenga caracteres peligrosos ni palabras reservadas de SQL. """
         code = self.codeInput.toPlainText()
         
         if len(code) > 10000:

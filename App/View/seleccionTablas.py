@@ -1,16 +1,15 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from App.Controller.databaseController import DatabaseController
 from App.View.databaseManagement import Ui_DataBaseManagementDialog
-from App.Controller.query_worker import QueryWorker  # Ya existe
-from App.Controller.progressWorker import ProgressWorker  # Importar ProgressWorker
-from App.View.loadingDialog import LoadingDialog  # Importar LoadingDialog
+from App.Controller.query_worker import QueryWorker  
+from App.Controller.progressWorker import ProgressWorker  
+from App.View.loadingDialog import LoadingDialog  
 from PyQt6.QtCore import Qt
 
 class Ui_Dialog(object):
     def __init__(self, main_window, database_controller):
-        # Instanciar el controlador de la base de datos
         self.databaseController = database_controller
-        self.main_window = main_window  # Mantener referencia a MainWindow
+        self.main_window = main_window  
 
     def setupUi(self, Dialog):
         self.current_dialog = Dialog
@@ -18,9 +17,8 @@ class Ui_Dialog(object):
         Dialog.resize(601, 480)
         Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
-        # Agregar QMenuBar
         self.menuBar = QtWidgets.QMenuBar(Dialog)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 601, 35))  # Ajustar tamaño de la barra
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 601, 35)) 
         self.menuBar.setStyleSheet("""
             QMenuBar {
                 background-color: rgb(8,172,20);  /* Fondo de la barra de menú */
@@ -39,7 +37,6 @@ class Ui_Dialog(object):
         """)
         self.menuBar.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
 
-        # Menú de opciones
         self.menuOptions = QtWidgets.QMenu("Opciones", self.menuBar)
         self.menuOptions.setStyleSheet("""
             QMenu {
@@ -56,20 +53,16 @@ class Ui_Dialog(object):
             }
         """)
 
-        # Acción para "Cambiar a Archivos"
         self.actionChangeToFiles = QtGui.QAction("Cambiar a Archivos", self.menuBar)
-        self.actionChangeToFiles.triggered.connect(lambda: self.sendToFiles(Dialog))  # Conectar la acción al método correspondiente
-        self.menuOptions.addAction(self.actionChangeToFiles)  # Añadir la acción al menú
+        self.actionChangeToFiles.triggered.connect(lambda: self.sendToFiles(Dialog))  
+        self.menuOptions.addAction(self.actionChangeToFiles)  
 
-        # Acción para "Gestionar BD"
         self.actionManageDB = QtGui.QAction("Gestionar BD", self.menuBar)
-        self.actionManageDB.triggered.connect(self.open_database_management)  # Conectar la acción al método de gestión de BD
-        self.menuOptions.addAction(self.actionManageDB)  # Añadir la acción al menú
+        self.actionManageDB.triggered.connect(self.open_database_management)  
+        self.menuOptions.addAction(self.actionManageDB) 
 
-        # Añadir el menú de opciones a la barra de menú
         self.menuBar.addMenu(self.menuOptions)
 
-        # Botón aceptar
         self.acceptTableSelectionButton = QtWidgets.QPushButton(parent=Dialog)
         self.acceptTableSelectionButton.setGeometry(QtCore.QRect(210, 420, 161, 31))
         font = QtGui.QFont()
@@ -82,7 +75,6 @@ class Ui_Dialog(object):
         self.acceptTableSelectionButton.setObjectName("acceptTableSelectionButton")
         self.acceptTableSelectionButton.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        # Contenedor de selección de bases de datos
         self.databaseSelectionContainer = QtWidgets.QFrame(parent=Dialog)
         self.databaseSelectionContainer.setGeometry(QtCore.QRect(50, 110, 501, 121))
         self.databaseSelectionContainer.setStyleSheet("background-color: rgb(255, 255, 255);\n"
@@ -91,7 +83,6 @@ class Ui_Dialog(object):
         self.databaseSelectionContainer.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.databaseSelectionContainer.setObjectName("databaseSelectionContainer")
 
-        # Etiqueta de selección de bases de datos
         self.databaseSelectionLabel = QtWidgets.QLabel(parent=self.databaseSelectionContainer)
         self.databaseSelectionLabel.setGeometry(QtCore.QRect(20, 40, 191, 41))
         font = QtGui.QFont()
@@ -105,7 +96,6 @@ class Ui_Dialog(object):
         self.databaseSelectionLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.databaseSelectionLabel.setObjectName("databaseSelectionLabel")
 
-        # Tabla de opciones de bases de datos
         self.databaseOptionsTable = QtWidgets.QTableWidget(parent=self.databaseSelectionContainer)
         self.databaseOptionsTable.setGeometry(QtCore.QRect(250, 10, 211, 101))
         self.databaseOptionsTable.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -117,7 +107,6 @@ class Ui_Dialog(object):
         self.databaseOptionsTable.setHorizontalHeaderLabels(["Base de Datos"])
         self.databaseOptionsTable.horizontalHeader().setStretchLastSection(True)
 
-        # Contenedor de selección de tablas
         self.tableSelectionContainer = QtWidgets.QFrame(parent=Dialog)
         self.tableSelectionContainer.setGeometry(QtCore.QRect(50, 280, 501, 121))
         self.tableSelectionContainer.setStyleSheet("background-color: rgb(255, 255, 255);\n"
@@ -127,7 +116,7 @@ class Ui_Dialog(object):
         self.tableSelectionContainer.setObjectName("tableSelectionContainer")
         
         self.progress_bar = QtWidgets.QProgressBar(parent=Dialog)
-        self.progress_bar.setGeometry(QtCore.QRect(50, 450, 500, 20))  # Ajusta según el diseño
+        self.progress_bar.setGeometry(QtCore.QRect(50, 450, 500, 20))  
         self.progress_bar.setStyleSheet("""
             QProgressBar {
                 border: 1px solid black;
@@ -141,9 +130,8 @@ class Ui_Dialog(object):
         """)
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
-        self.progress_bar.setVisible(False)  # Oculta inicialmente
+        self.progress_bar.setVisible(False) 
 
-        # Etiqueta de selección de tablas
         self.tableSelectionLabel = QtWidgets.QLabel(parent=self.tableSelectionContainer)
         self.tableSelectionLabel.setGeometry(QtCore.QRect(20, 40, 191, 41))
         font = QtGui.QFont()
@@ -157,7 +145,6 @@ class Ui_Dialog(object):
         self.tableSelectionLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.tableSelectionLabel.setObjectName("tableSelectionLabel")
 
-        # Tabla de opciones de tablas
         self.tableOptionTable = QtWidgets.QTableWidget(parent=self.tableSelectionContainer)
         self.tableOptionTable.setGeometry(QtCore.QRect(260, 10, 211, 101))
         self.tableOptionTable.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -169,7 +156,6 @@ class Ui_Dialog(object):
         self.tableOptionTable.setHorizontalHeaderLabels(["Tablas"])
         self.tableOptionTable.horizontalHeader().setStretchLastSection(True)
 
-        # Etiqueta de ventana
         self.tableSelectionWindowLabel = QtWidgets.QLabel(parent=Dialog)
         self.tableSelectionWindowLabel.setGeometry(QtCore.QRect(160, 60, 301, 31))
         font = QtGui.QFont()
@@ -219,12 +205,12 @@ class Ui_Dialog(object):
         selected_row = self.databaseOptionsTable.currentRow()
         if selected_row != -1:
             selected_database = self.databaseOptionsTable.item(selected_row, 0).text()
-            tables = self.databaseController.get_tables(selected_database)  # Obtener tablas
+            tables = self.databaseController.get_tables(selected_database)  
 
             self.tableOptionTable.setRowCount(len(tables))
 
             for row, table_name in enumerate(tables):
-                self.tableOptionTable.setItem(row, 0, QtWidgets.QTableWidgetItem(table_name))  # Usar nombre completo
+                self.tableOptionTable.setItem(row, 0, QtWidgets.QTableWidgetItem(table_name))  
 
 
                 
@@ -257,11 +243,9 @@ class Ui_Dialog(object):
                     )
                     self.databaseController.connect()
 
-                # Mostrar el diálogo de carga
                 self.loading_dialog = LoadingDialog(self.main_window)
                 self.loading_dialog.show()
 
-                # Iniciar el hilo para la consulta
                 self.query_worker = QueryWorker(self.databaseController, selected_database, selected_table)
                 self.query_worker.progress.connect(self.loading_dialog.update_progress)
                 self.query_worker.finished.connect(self.on_query_finished)
@@ -273,13 +257,11 @@ class Ui_Dialog(object):
 
 
     def on_query_finished(self, result):
-        self.loading_dialog.close()  # Cerrar diálogo de carga
+        self.loading_dialog.close()  
         data, column_names = result
 
-        # Cargar datos en la tabla principal
         self.main_window.load_data_in_actual_table(data, column_names)
 
-        # Actualizar tabla resumen
         selected_table = self.tableOptionTable.item(self.tableOptionTable.currentRow(), 0).text()
         self.main_window.summayOfDataTable.setRowCount(0)
         self.main_window.summayOfDataTable.setRowCount(1)
@@ -287,15 +269,10 @@ class Ui_Dialog(object):
         self.main_window.summayOfDataTable.setItem(0, 1, QtWidgets.QTableWidgetItem("Tabla"))
         self.main_window.summayOfDataTable.setItem(0, 2, QtWidgets.QTableWidgetItem(selected_table))
 
-        # Mostrar mensaje de éxito
         QtWidgets.QMessageBox.information(None, "Éxito", "Datos cargados correctamente.")
 
-        # Cerrar el diálogo
-        self.current_dialog.close()  # Usamos la referencia correcta
-
-
-
-
+        self.current_dialog.close() 
+        
     def on_query_error(self, error_message):
         self.loading_dialog.close()
         QtWidgets.QMessageBox.critical(None, "Error", f"Error al cargar datos: {error_message}")

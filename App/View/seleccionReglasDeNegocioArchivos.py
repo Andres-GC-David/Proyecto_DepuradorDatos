@@ -155,7 +155,6 @@ class Ui_Dialog(object):
         self.ruleSummaryLabel.setObjectName("ruleSummaryLabel")
 
         self.summaryOfOptionsTable = QtWidgets.QTableWidget(parent=Dialog)
-        #self.summaryOfOptionsTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
         self.summaryOfOptionsTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         self.summaryOfOptionsTable.setGeometry(QtCore.QRect(50, 450, 801, 192))
         self.summaryOfOptionsTable.setStyleSheet("background-color: rgb(255, 255, 255);\n"
@@ -163,8 +162,8 @@ class Ui_Dialog(object):
                                                 "border: 1px solid black;")
         self.summaryOfOptionsTable.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
         self.summaryOfOptionsTable.setObjectName("summaryOfOptionsTable")
-        self.summaryOfOptionsTable.setColumnCount(4)  # Cambiar a 4 columnas para incluir el botón "Eliminar"
-        self.summaryOfOptionsTable.setHorizontalHeaderLabels(["Nombre Modificacion", "Modificacion", "Columna", ""])  # Añadir columna "Eliminar"
+        self.summaryOfOptionsTable.setColumnCount(4)  
+        self.summaryOfOptionsTable.setHorizontalHeaderLabels(["Nombre Modificacion", "Modificacion", "Columna", ""])  
         self.summaryOfOptionsTable.setRowCount(0)
         self.summaryOfOptionsTable.setColumnWidth(0, 266)
         self.summaryOfOptionsTable.setColumnWidth(1, 266)
@@ -188,26 +187,24 @@ class Ui_Dialog(object):
         selected_rules = self.main_window.controller.selected_rules
         existing_rules = set()
 
-        # Evitar reglas duplicadas en la tabla de opciones
         for row in range(self.summaryOfOptionsTable.rowCount()):
             rule_name = self.summaryOfOptionsTable.item(row, 0).text()
             column_name = self.summaryOfOptionsTable.item(row, 1).text()
             existing_rules.add((rule_name, column_name))
 
-        # Solo agregar reglas que no estén ya presentes en la tabla
         if selected_rules:
             for rule in selected_rules:
-                if (rule[0], rule[1]) not in existing_rules:  # Si la regla no está en la tabla
+                if (rule[0], rule[1]) not in existing_rules:  
                     row_position = self.summaryOfOptionsTable.rowCount()
                     self.summaryOfOptionsTable.insertRow(row_position)
                     self.summaryOfOptionsTable.setItem(row_position, 0, QtWidgets.QTableWidgetItem(rule[0]))
                     self.summaryOfOptionsTable.setItem(row_position, 1, QtWidgets.QTableWidgetItem(rule[1]))
                     if isinstance(rule[2], dict):
-                        description = str(rule[2])  # Convertir el dict a una cadena legible
+                        description = str(rule[2])  
                     else:
-                        description = rule[2]  # Asumimos que es una cadena
+                        description = rule[2]  
 
-                    self.summaryOfOptionsTable.setItem(row_position, 2, QtWidgets.QTableWidgetItem(description))  # Columna 2: Descripción de la regla
+                    self.summaryOfOptionsTable.setItem(row_position, 2, QtWidgets.QTableWidgetItem(description)) 
                     delete_button = QtWidgets.QPushButton("Eliminar")
                     delete_button.setStyleSheet("background-color: red; color: white;")
                     delete_button.setFont(QtGui.QFont("Segoe UI", 10, QtGui.QFont.Weight.Bold))
@@ -234,15 +231,13 @@ class Ui_Dialog(object):
 
 
     def add_selected_options(self):
-        # Obtiene los elementos seleccionados de las tablas
-        rule_item = self.ruleOptionsTable.currentItem()  # Selección de la tabla de reglas
-        column_item = self.columnsOptionsTable.currentItem()  # Selección de la tabla de columnas
+        rule_item = self.ruleOptionsTable.currentItem() 
+        column_item = self.columnsOptionsTable.currentItem()  
 
         if rule_item is None or column_item is None:
             QtWidgets.QMessageBox.warning(None, "Advertencia", "Debe seleccionar una opción y una columna.")
             return
 
-        # Llama al método del controlador y pasa las referencias a los objetos de tabla
         self.controller.add_selected_options(self.ruleOptionsTable, self.columnsOptionsTable, self.summaryOfOptionsTable)
 
 

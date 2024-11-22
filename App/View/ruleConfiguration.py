@@ -22,14 +22,13 @@ class RuleConfiguration(object):
         Dialog.setStyleSheet("background-color: rgb(8,172,20);")
         Dialog.setWindowTitle("Gestión de Reglas de Negocio")
 
-        # Cambiar el título usando geometry
+
         self.titleLabel = QtWidgets.QLabel("Gestión de Reglas de Negocio", Dialog)
         self.titleLabel.setGeometry(220, 20, 400, 50)
         self.titleLabel.setFont(QtGui.QFont("Segoe UI", 18, QtGui.QFont.Weight.Bold))
         self.titleLabel.setStyleSheet("color: rgb(255, 255, 255);")
         self.titleLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignLeft)
 
-        # Modificar el botón usando geometry
         self.addRuleButton = QtWidgets.QPushButton("Agregar Regla", Dialog)
         self.addRuleButton.setGeometry(235, 80, 300, 40)
         self.addRuleButton.setFont(QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold))
@@ -45,7 +44,6 @@ class RuleConfiguration(object):
         """)
         self.addRuleButton.clicked.connect(self.open_add_rule_dialog)
 
-        # Agregar scroll a las reglas dinámicas
         self.scrollArea = QtWidgets.QScrollArea(Dialog)
         self.scrollArea.setStyleSheet("background-color: white ;")
         self.scrollArea.setGeometry(20, 140, 760, 400)

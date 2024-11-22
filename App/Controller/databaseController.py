@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 import time
 from pathlib import Path
+from PyQt6 import QtWidgets
 
 load_dotenv('.env')
 
@@ -113,10 +114,8 @@ class DatabaseController:
             connection = self.get_connection()
             cursor = connection.cursor()
 
-            # Obtener columnas
             columns_to_display = self.get_columns_to_display(table_name)
 
-            # Contar filas para estimar progreso
             count_query = f"SELECT COUNT(*) FROM {database_name}.{table_name}"
             cursor.execute(count_query)
             total_rows = cursor.fetchone()[0]
@@ -127,11 +126,10 @@ class DatabaseController:
             rows = []
             column_names = [col[0] for col in cursor.description]
 
-            # Procesar filas y emitir progreso
             for i, row in enumerate(cursor, start=1):
                 rows.append(row)
                 if progress_callback and total_rows > 0:
-                    progress_callback(int((i / total_rows) * 100))  # Emitir progreso
+                    progress_callback(int((i / total_rows) * 100))
 
             cursor.close()
 
@@ -147,13 +145,11 @@ class DatabaseController:
             if table_name in tables:
                 table_info = tables[table_name]
                 
-                # Si table_info es un diccionario, maneja "clave" y "campos" normalmente
                 if isinstance(table_info, dict):
                     columns = [f'"{table_info["clave"]}"'] if "clave" in table_info and table_info["clave"] not in table_info["campos"] else []
                     columns += [f'"{col}"' for col in table_info.get("campos", [])]
                     return ", ".join(columns)
                 
-                # Si table_info es una lista, simplemente retorna los campos de la lista
                 elif isinstance(table_info, list):
                     return ", ".join([f'"{col}"' for col in table_info])
                 
@@ -161,8 +157,6 @@ class DatabaseController:
                     raise TypeError(f"Formato inesperado para 'table_info' en la tabla '{table_name}'")
         
         return "*"
-
-
 
     def get_parameterOptionsWithDescription(self, table_name):
         return self.rules_by_table.get(table_name.lower(), [])
@@ -203,70 +197,57 @@ class DatabaseController:
     def generate_sql_script(self, db_name, table_name, original_df, modified_df, save_path, column_name=None, progress_callback=None):
         print(f"Column name: {column_name} desde dbController")
         try:
-            # Obtener el esquema al que pertenece la tabla usando get_schema_by_table
             schema_name = self.get_schema_by_table(table_name)
             
-            # Obtener información de la tabla
             table_info = self.schema_table_data[schema_name].get(table_name)
             if not table_info:
                 print(f"Error: La tabla '{table_name}' no existe en el esquema '{schema_name}'.")
                 return None
 
-            # Obtener la clave primaria de la tabla
             primary_key = table_info.get("clave")
             if not primary_key:
                 print(f"Error: No se encontró clave primaria para la tabla '{table_name}' en el esquema '{schema_name}'.")
                 return None
 
-            # Generar el script SQL con el esquema
             script = f"USE {schema_name};\n"
 
-            total_rows = len(modified_df)  # Número total de filas
+            total_rows = len(modified_df)  
             for index, row in modified_df.iterrows():
-                # Verificar si hay un cambio en la columna especificada (column_name)
                 if column_name is not None:
                     for col in original_df.columns:
                         original_value = original_df.iloc[index][col]
                         modified_value = row[col]
 
-                        # Solo generar el UPDATE si el valor original no es None, "None", null, o vacío, y hay un cambio
                         if original_value not in [None, "None", "null", "", "ND"] and original_value != modified_value:
                             set_clause = f"{column_name}='{modified_value}'"
                             where_clause = f"{primary_key}='{original_df.iloc[index][primary_key]}'"
-                            # Agregar condición adicional si column_name no es el campo clave
                             if column_name != primary_key:
-                                if row[column_name] == 'None':  # Si el valor es None, poner NULL
+                                if row[column_name] == 'None':  
                                     where_clause += f" AND {column_name} IS NULL"
                                 else:
                                     where_clause += f" AND {column_name}='{row[column_name]}'"
                             script += f"UPDATE {table_name} SET {set_clause} WHERE {where_clause};\n"
 
                 else:
-                    # Si no se especifica column_name, recorre todas las columnas para detectar cambios
                     changes = []
                     where_conditions = [f"{primary_key}='{original_df.iloc[index][primary_key]}'"]
                     for col in original_df.columns:
                         original_value = original_df.iloc[index][col]
                         modified_value = row[col]
                         
-                        # Solo incluir en el SET y WHERE si el valor original no es None, "None", null, o vacío, y ha cambiado
                         if original_value not in [None, "None", "null", "", "ND"] and original_value != modified_value:
                             changes.append(f"{col}='{modified_value}'")
-                            # Evitar duplicación del campo clave en where_conditions
                             if col != primary_key:
                                 where_conditions.append(f"{col}='{original_value}'")
 
-                    # Solo generar el script si hay cambios
                     if changes:
                         set_clause = ", ".join(changes)
                         where_clause = " AND ".join(where_conditions)
                         script += f"UPDATE {table_name} SET {set_clause} WHERE {where_clause};\n"
 
-                # Actualizar el progreso si se proporciona un callback
                 if progress_callback:
                     progress_callback(int((index + 1) / total_rows * 100))
 
-            # Guardar el script en el archivo especificado
             sql_file_name = f"{table_name}_Depurado.sql"
             full_file_path = os.path.join(os.path.dirname(save_path), sql_file_name)
             print(f"Intentando guardar el archivo SQL en: {full_file_path}")
@@ -333,7 +314,12 @@ class DatabaseController:
     def update_table_key(self, schema_name, table_name, new_key):
         """Actualiza la clave de la tabla en el archivo databaseManagement.JSON."""
         if schema_name in self.schema_table_data and table_name in self.schema_table_data[schema_name]:
-            # Actualiza la clave de la tabla en el diccionario
             self.schema_table_data[schema_name][table_name]["clave"] = new_key
-            # Guarda los cambios en el archivo JSON
             self.save_database_management_data()
+            
+    def remove_rule(self, summary_of_options_table, row_position):
+        summary_of_options_table.removeRow(row_position)
+        if row_position < len(self.main_window.controller.selected_rules):
+            del self.main_window.controller.selected_rules[row_position]
+        self.update_main_window_table()
+        QtWidgets.QMessageBox.information(None, "Eliminar", "La regla ha sido eliminada exitosamente.")

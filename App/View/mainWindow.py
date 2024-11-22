@@ -3,6 +3,7 @@ from PyQt6.QtCore import Qt
 from App.Controller.mainWindowController import MainWindowController
 from App.View.addRule import AddRule 
 from App.View.ruleConfiguration import RuleConfiguration 
+from App.View.aboutProject import Ui_AboutProject 
 
 class Ui_MainWindow(object):
     def __init__(self):
@@ -10,7 +11,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1150, 760) 
+        MainWindow.resize(1250, 800)  # Tamaño ajustado de la ventana para mantener proporciones
         MainWindow.setAutoFillBackground(False)
         MainWindow.setStyleSheet("background-color: rgb(8,172,20);")
         MainWindow.setWindowTitle("Depurador de Datos")
@@ -20,12 +21,55 @@ class Ui_MainWindow(object):
         self.main_layout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.main_layout.setContentsMargins(10, 10, 10, 10)
 
-        self.dataSelectionWindowLabel = QtWidgets.QLabel("Selección de Datos", parent=self.centralwidget)
-        self.dataSelectionWindowLabel.setFont(QtGui.QFont("Segoe UI", 20, QtGui.QFont.Weight.Bold))
+        # Agregar contenedor superior para logo, título y botón de ayuda
+        self.header_layout = QtWidgets.QHBoxLayout()
+        self.header_layout.setSpacing(20)
+
+        # Logo
+        self.logoLabel = QtWidgets.QLabel(parent=self.centralwidget)
+        self.logoLabel.setGeometry(QtCore.QRect(0, 0, 250, 70))  # Logo más ancho
+        pixmap = QtGui.QPixmap("App/Images/LogoCoope.png")  # Ruta al logo
+        scaled_pixmap = pixmap.scaled(250, 70, Qt.AspectRatioMode.KeepAspectRatio)  # Mantener altura
+        self.logoLabel.setPixmap(scaled_pixmap)
+        self.logoLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.header_layout.addWidget(self.logoLabel)
+
+        # Título a la derecha del logo
+        self.dataSelectionWindowLabel = QtWidgets.QLabel("Depurador de Datos", parent=self.centralwidget)
+        self.dataSelectionWindowLabel.setFont(QtGui.QFont("Segoe UI", 24, QtGui.QFont.Weight.Bold))
         self.dataSelectionWindowLabel.setStyleSheet("color: rgb(255, 255, 255);")
         self.dataSelectionWindowLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
-        self.main_layout.addWidget(self.dataSelectionWindowLabel)
+        self.dataSelectionWindowLabel.setContentsMargins(0, 10, 0, 0)  # Bajar un poco el título
+        self.header_layout.addWidget(self.dataSelectionWindowLabel)
+        
+        # Espaciador para centrar el botón de ayuda a la derecha
+        self.header_layout.addStretch()
 
+        # Botón circular "?" (blanco con texto negro)
+        self.helpButton = QtWidgets.QPushButton("?", parent=self.centralwidget)
+        self.helpButton.setFont(QtGui.QFont("Segoe UI", 18, QtGui.QFont.Weight.Bold))  # Texto más grande
+        self.helpButton.setFixedSize(40, 40)  # Botón más grande
+        self.helpButton.setStyleSheet("""
+            QPushButton {
+                background-color: white;  /* Fondo blanco */
+                color: black;             /* Texto negro */
+                border-radius: 10%;      /* Hacerlo completamente redondo */
+                border: 2px solid black;  /* Borde negro para contraste */
+            }
+            QPushButton:hover {
+                background-color: lightgray;  /* Cambiar a gris claro al pasar el ratón */
+            }
+            QPushButton:pressed {
+                background-color: darkgray;  /* Cambiar a gris oscuro al hacer clic */
+            }
+        """)
+        self.helpButton.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.header_layout.addWidget(self.helpButton)
+        self.helpButton.clicked.connect(self.open_about_project)
+
+        self.main_layout.addLayout(self.header_layout)
+
+        # Contenedor principal para botones y tablas
         self.dataSelectionContainer = QtWidgets.QFrame(parent=self.centralwidget)
         self.dataSelectionContainer.setStyleSheet("background-color: rgb(255, 255, 255);\n"
                                                 "border-radius: 4px;\n")
@@ -136,6 +180,12 @@ class Ui_MainWindow(object):
         self.controller.selected_rules = []
         self.summaryOfParameterTable.setRowCount(0)  
         self.summayOfDataTable.setRowCount(0)
+        
+    def open_about_project(self):
+        self.aboutWindow = QtWidgets.QMainWindow()
+        self.ui_about = Ui_AboutProject()
+        self.ui_about.setupUi(self.aboutWindow)
+        self.aboutWindow.show()
 
     def clear_rules_and_select_files(self):
         self.controller.selected_rules = []

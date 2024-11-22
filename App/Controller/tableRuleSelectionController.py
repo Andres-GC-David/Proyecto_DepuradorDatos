@@ -72,33 +72,27 @@ class TableRuleSelectionController:
 
     def transfer_data_to_main_window(self, summary_of_options_table):
         try:
-            # Clear previous entries in the main window summary table
             self.main_window.summaryOfParameterTable.setRowCount(0)
             selected_rules = []
 
-            # Iterate over each row in summary_of_options_table to transfer data in the correct order
             for row in range(summary_of_options_table.rowCount()):
-                rule_name_item = summary_of_options_table.item(row, 0)  # "Nombre Modificación"
-                modification_item = summary_of_options_table.item(row, 1)  # "Modificación"
-                column_item = summary_of_options_table.item(row, 2)  # "Columna"
+                rule_name_item = summary_of_options_table.item(row, 0)  
+                modification_item = summary_of_options_table.item(row, 1) 
+                column_item = summary_of_options_table.item(row, 2) 
 
                 if rule_name_item and modification_item and column_item:
-                    # Insert a new row into the main window summary table
                     self.main_window.summaryOfParameterTable.insertRow(row)
                     self.main_window.summaryOfParameterTable.setItem(row, 0, QtWidgets.QTableWidgetItem(rule_name_item.text()))
                     self.main_window.summaryOfParameterTable.setItem(row, 1, QtWidgets.QTableWidgetItem(modification_item.text()))
                     self.main_window.summaryOfParameterTable.setItem(row, 2, QtWidgets.QTableWidgetItem(column_item.text()))
 
-                    # Add a delete button to the last column
                     delete_button = QtWidgets.QPushButton("Eliminar")
                     delete_button.setStyleSheet("background-color: red; color: white;")
                     delete_button.clicked.connect(lambda checked, row=row: self.remove_rule(summary_of_options_table, row))
                     self.main_window.summaryOfParameterTable.setCellWidget(row, 3, delete_button)
 
-                    # Append to selected_rules in the correct order
                     selected_rules.append((rule_name_item.text(), modification_item.text(), column_item.text()))
 
-            # Update the selected rules in the main window controller
             self.main_window.controller.selected_rules = selected_rules
             print(self.main_window.controller.selected_rules, "desde tableRuleSelectionController")
 

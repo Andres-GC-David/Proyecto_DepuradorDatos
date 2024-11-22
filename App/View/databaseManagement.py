@@ -24,33 +24,28 @@ class Ui_DataBaseManagementDialog(object):
         Dialog.setWindowTitle("Gestión de Esquemas y Tablas")
         Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
-        # Título
         self.titleLabel = QtWidgets.QLabel("Gestión de Esquemas y Tablas", Dialog)
-        self.titleLabel.setGeometry(QtCore.QRect(100, 10, 450, 40))  # Ancho ajustado
+        self.titleLabel.setGeometry(QtCore.QRect(100, 10, 450, 40))  
         self.titleLabel.setFont(QtGui.QFont("Segoe UI", 18, QtGui.QFont.Weight.Bold))
         self.titleLabel.setStyleSheet("color: white;")
         self.titleLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-        # Panel para Esquemas
         self.schemaPanel = QtWidgets.QWidget(Dialog)
-        self.schemaPanel.setGeometry(QtCore.QRect(20, 70, 610, 260))  # Panel más ancho
+        self.schemaPanel.setGeometry(QtCore.QRect(20, 70, 610, 260))  
         self.schemaPanel.setStyleSheet("background-color: white; border-radius: 8px;")
 
-        # Título de lista de esquemas
         self.schemaListLabel = QtWidgets.QLabel("Esquemas", self.schemaPanel)
         self.schemaListLabel.setGeometry(QtCore.QRect(20, 10, 100, 25))
         self.schemaListLabel.setFont(QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold))
         self.schemaListLabel.setStyleSheet("color: black;")
 
-        # Botón agregar esquema al inicio
         self.addSchemaButton = QtWidgets.QPushButton("Agregar Esquema", self.schemaPanel)
-        self.addSchemaButton.setGeometry(QtCore.QRect(440, 10, 140, 30))  # Más espacio para el botón
+        self.addSchemaButton.setGeometry(QtCore.QRect(440, 10, 140, 30))  
         self.addSchemaButton.setStyleSheet("background-color: green; color: white; padding: 6px; border-radius: 4px;")
         self.addSchemaButton.clicked.connect(self.add_schema)
 
-        # Lista de esquemas sin bordes
         self.schemaList = QtWidgets.QListWidget(self.schemaPanel)
-        self.schemaList.setGeometry(QtCore.QRect(20, 50, 570, 180))  # Ajuste del ancho
+        self.schemaList.setGeometry(QtCore.QRect(20, 50, 570, 180))
         self.schemaList.setStyleSheet("""
             QListWidget::item {
                 border: none;
@@ -68,26 +63,22 @@ class Ui_DataBaseManagementDialog(object):
         """)
         self.load_schemas()
 
-        # Panel para Tablas
         self.tablePanel = QtWidgets.QWidget(Dialog)
-        self.tablePanel.setGeometry(QtCore.QRect(20, 350, 610, 260))  # Panel más ancho
+        self.tablePanel.setGeometry(QtCore.QRect(20, 350, 610, 260)) 
         self.tablePanel.setStyleSheet("background-color: white; border-radius: 8px;")
 
-        # Título de lista de tablas
         self.tableListLabel = QtWidgets.QLabel("Tablas del Esquema", self.tablePanel)
         self.tableListLabel.setGeometry(QtCore.QRect(20, 10, 150, 25))
         self.tableListLabel.setFont(QtGui.QFont("Segoe UI", 12, QtGui.QFont.Weight.Bold))
         self.tableListLabel.setStyleSheet("color: black;")
 
-        # Botón agregar tabla al inicio
         self.addTableButton = QtWidgets.QPushButton("Agregar Tabla", self.tablePanel)
-        self.addTableButton.setGeometry(QtCore.QRect(440, 10, 140, 30))  # Más espacio para el botón
+        self.addTableButton.setGeometry(QtCore.QRect(440, 10, 140, 30))  
         self.addTableButton.setStyleSheet("background-color: green; color: white; padding: 6px; border-radius: 4px;")
         self.addTableButton.clicked.connect(self.add_table)
 
-        # Lista de tablas sin bordes
         self.tableList = QtWidgets.QListWidget(self.tablePanel)
-        self.tableList.setGeometry(QtCore.QRect(20, 50, 570, 250))  # Ajuste del ancho
+        self.tableList.setGeometry(QtCore.QRect(20, 50, 570, 250))  
         self.tableList.setStyleSheet("""
             QListWidget::item {
                 border: none;
@@ -124,7 +115,6 @@ class Ui_DataBaseManagementDialog(object):
         table_name, ok = QtWidgets.QInputDialog.getText(None, "Agregar Tabla", f"Nombre de la Tabla para {schema_name}:")
         if ok and table_name:
             if self.validate_input(table_name):
-                # Inicializa la estructura de la nueva tabla con `clave` vacío y `campos` como lista vacía
                 self.schema_table_data[schema_name][table_name] = {
                     "clave": "",
                     "campos": []
@@ -136,20 +126,15 @@ class Ui_DataBaseManagementDialog(object):
 
 
     def validate_input(self, input_value):
-        """ Valida que el nombre de esquemas o tablas no contenga caracteres peligrosos ni palabras clave SQL """
-        # No permitir caracteres peligrosos
         if re.search(r"[\"';]", input_value) or "--" in input_value:
             return False
-        
-        # No permitir palabras clave SQL
+
         if re.search(r"\b(SELECT|INSERT|DELETE|DROP|UPDATE|ALTER|EXEC)\b", input_value, re.IGNORECASE):
             return False
-        
-        # Limitar la longitud de los nombres
+
         if len(input_value) > 75:
             return False
-        
-        # Permitir solo letras, números, y guiones bajos
+
         if not re.match(r"^[a-zA-Z0-9_]+$", input_value):
             return False
         
@@ -168,12 +153,11 @@ class Ui_DataBaseManagementDialog(object):
             self.load_tables()
 
     def view_table_data(self, schema_name, table_name):
-        # Método para ver datos de una tabla
         QtWidgets.QMessageBox.information(None, "Ver Tabla", f"Datos de la tabla {table_name} del esquema {schema_name}")
 
     def modify_columns(self, schema_name, table_name):
         dialog = QtWidgets.QDialog()
-        ui = Ui_TableColumnManagementDialog(schema_name, table_name, self.databaseController)  # Usamos el nuevo diálogo
+        ui = Ui_TableColumnManagementDialog(schema_name, table_name, self.databaseController) 
         ui.setupUi(dialog)
         dialog.exec()
 
@@ -189,11 +173,9 @@ class Ui_DataBaseManagementDialog(object):
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QHBoxLayout()
 
-        # Etiqueta con el nombre del esquema
         schemaLabel = QtWidgets.QLabel(schema_name)
         schemaLabel.setStyleSheet("color: black;")
-
-        # Botón de eliminar esquema (solo para nuevos)
+        
         deleteButton = QtWidgets.QPushButton("Eliminar")
         deleteButton.setFont(QtGui.QFont("Segoe UI", 12))
         deleteButton.setStyleSheet("background-color: red; color: white; padding: 6px; border-radius: 4px;")
@@ -205,8 +187,8 @@ class Ui_DataBaseManagementDialog(object):
 
         layout.addWidget(schemaLabel)
         layout.addWidget(deleteButton)
-        layout.setContentsMargins(5, 5, 5, 5)  # Márgenes ajustados
-        layout.setSpacing(20)  # Espaciado entre los elementos
+        layout.setContentsMargins(5, 5, 5, 5) 
+        layout.setSpacing(20)  
 
         widget.setLayout(layout)
         widget.setFixedHeight(40)
@@ -226,7 +208,6 @@ class Ui_DataBaseManagementDialog(object):
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QHBoxLayout()
 
-        # Etiqueta con el nombre de la tabla
         tableLabel = QtWidgets.QLabel(table_name)
         tableLabel.setStyleSheet("color: black;")
 
@@ -235,13 +216,11 @@ class Ui_DataBaseManagementDialog(object):
         modifyButton.setStyleSheet("background-color: green; color: white; padding: 6px; border-radius: 4px;")
         modifyButton.clicked.connect(lambda: self.modify_columns(schema_name, table_name))
 
-        # Nuevo botón para "Definir Indicador"
         defineIndicatorButton = QtWidgets.QPushButton("Definir Indicador")
         defineIndicatorButton.setFont(QtGui.QFont("Segoe UI", 10))
         defineIndicatorButton.setStyleSheet("background-color: blue; color: white; padding: 6px; border-radius: 4px;")
         defineIndicatorButton.clicked.connect(lambda: self.define_indicator(schema_name, table_name))
 
-        # Botón de eliminar tabla
         deleteButton = QtWidgets.QPushButton("Eliminar")
         deleteButton.setFont(QtGui.QFont("Segoe UI", 12))
         deleteButton.setStyleSheet("background-color: red; color: white; padding: 6px; border-radius: 4px;")
@@ -253,7 +232,7 @@ class Ui_DataBaseManagementDialog(object):
 
         layout.addWidget(tableLabel)
         layout.addWidget(modifyButton)
-        layout.addWidget(defineIndicatorButton)  # Agregar el nuevo botón al layout
+        layout.addWidget(defineIndicatorButton)  
         layout.addWidget(deleteButton)
         layout.setContentsMargins(5, 5, 5, 5)  
         layout.setSpacing(20) 
@@ -265,7 +244,7 @@ class Ui_DataBaseManagementDialog(object):
 
     def define_indicator(self, schema_name, table_name):
         dialog = QtWidgets.QDialog()
-        ui = Ui_TableIndexSelectionDialog(schema_name, table_name, self.databaseController)  # Crea una instancia del nuevo diálogo
+        ui = Ui_TableIndexSelectionDialog(schema_name, table_name, self.databaseController) 
         ui.setupUi(dialog)
         dialog.exec()
 

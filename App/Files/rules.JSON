@@ -4,8 +4,7 @@
         "Validacion Correos",
         "Estandarizacion de Cedulas",
         "Eliminacion de Duplicados",
-        "Regla Personalizada 3",
-        "g"
+        "Valida Correos"
     ],
     "file_rules": {
         "CSV": [
@@ -24,6 +23,10 @@
             {
                 "rule": "Eliminacion de Duplicados",
                 "description": "Descripcion aqui"
+            },
+            {
+                "rule": "Valida Correos",
+                "description": "Convierte a nulo correos que no cumplen validaci\u00f3n de sintaxis"
             }
         ],
         "XLSX": [
@@ -133,10 +136,6 @@
             },
             {
                 "rule": "Eliminacion de Duplicados",
-                "description": "Descripcion aqui"
-            },
-            {
-                "rule": "Regla Personalizada 3",
                 "description": "Descripcion aqui"
             }
         ],

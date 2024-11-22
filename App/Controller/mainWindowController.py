@@ -28,31 +28,25 @@ class MainWindowController:
                 msg_box.exec()
                 return
 
-            #self.selected_rules = self._extract_rules_with_parameters(parameter_table)
             print(self.selected_rules, "desde mainWindow")
             df = self._extract_table_data_as_dataframe(ui_main_window.actualDataContainer)
             rules = self._extract_rules_with_parameters(parameter_table)
 
-            # Mostrar el diálogo de carga
             self.loading_dialog = LoadingDialog(ui_main_window.centralwidget)
             self.loading_dialog.show()
 
-            # Crear el ProgressWorker para manejar la barra de progreso
             self.progress_worker = ProgressWorker(simulated=False)
             self.progress_worker.progress.connect(self.loading_dialog.update_progress)
 
-            # Crear un hilo para manejar la depuración
             self.thread = QThread()
             self.progress_worker.moveToThread(self.thread)
 
-            # Conectar señales
             self.thread.started.connect(
                 lambda: self._process_depuration(df, rules, ui_main_window)
             )
             self.progress_worker.finished.connect(self.on_depuration_finished)
             self.progress_worker.error.connect(self.on_depuration_error)
 
-            # Iniciar el hilo
             self.thread.start()
 
         except Exception as e:
@@ -60,7 +54,6 @@ class MainWindowController:
 
     def _process_depuration(self, df, rules, ui_main_window):
         try:
-            # Llamar al método de depuración con progreso
             modified_df = self.rule_depuration_controller.apply_rules_with_progress(
                 df, rules, self.progress_worker.emit_progress
             )
@@ -174,26 +167,21 @@ class MainWindowController:
 
     def _download_sql_script(self, ui_main_window, db_name, save_path):
         try:
-            # Mostrar el diálogo de carga
             self.loading_dialog = LoadingDialog(ui_main_window.centralwidget)
             self.loading_dialog.show()
 
-            # Crear el ProgressWorker para manejar la barra de progreso
             self.progress_worker = ProgressWorker(simulated=False)
             self.progress_worker.progress.connect(self.loading_dialog.update_progress)
 
-            # Crear un hilo para generar el script SQL
             self.thread = QThread()
             self.progress_worker.moveToThread(self.thread)
 
-            # Conectar señales para manejar el progreso
             self.thread.started.connect(
                 lambda: self._generate_sql_script(ui_main_window, db_name, save_path)
             )
             self.progress_worker.finished.connect(self.on_sql_generation_finished)
             self.progress_worker.error.connect(self.on_sql_generation_error)
 
-            # Iniciar el hilo
             self.thread.start()
 
         except Exception as e:
@@ -206,11 +194,9 @@ class MainWindowController:
 
     def _generate_sql_script(self, ui_main_window, db_name, save_path):
         try:
-            # Obtener los datos originales y modificados
             original_df = self._extract_table_data_as_dataframe(ui_main_window.actualDataContainer)
             modified_df = self._extract_table_data_as_dataframe(ui_main_window.newDataContainer)
 
-            # Validaciones previas
             if original_df.empty or modified_df.empty:
                 raise ValueError("Los datos originales o modificados están vacíos.")
             if list(original_df.columns) != list(modified_df.columns):
@@ -228,7 +214,6 @@ class MainWindowController:
             else:
                 columnsSelectedForDepuration = None
 
-            # Llamar a la generación del script SQL con progreso
             sql_file_name = self.database_controller.generate_sql_script(
                 db_name,
                 table_name,
@@ -236,7 +221,7 @@ class MainWindowController:
                 modified_df,
                 save_path,
                 column_name=columnsSelectedForDepuration,
-                progress_callback=self.progress_worker.emit_progress,  # Enviar progreso
+                progress_callback=self.progress_worker.emit_progress,  
             )
 
             self.progress_worker.emit_finished(sql_file_name)

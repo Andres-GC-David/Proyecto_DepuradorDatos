@@ -43,7 +43,7 @@
             ]
         },
         "empleado": {
-            "clave": "TELEFONO1",
+            "clave": "IDENTIFICACION",
             "campos": [
                 "TELEFONO1",
                 "TELEFONO2",
@@ -61,13 +61,13 @@
             ]
         },
         "proveedor": {
-            "clave": "E_MAIL",
+            "clave": "PROVEEDOR",
             "campos": [
                 "E_MAIL"
             ]
         },
         "empleado": {
-            "clave": "TELEFONO1",
+            "clave": "IDENTIFICACION",
             "campos": [
                 "TELEFONO1",
                 "TELEFONO2",

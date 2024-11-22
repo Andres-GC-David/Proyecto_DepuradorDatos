@@ -9,7 +9,7 @@ class Ui_RuleActionEmailDialog(object):
 
     def setupUi(self, Dialog, rule_name):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(500, 460)  # Aumentamos el tamaño para hacer espacio al input
+        Dialog.resize(500, 460)  
         Dialog.setStyleSheet("background-color: rgb(8,172,20);")
 
         self.titleLabel = QtWidgets.QLabel(Dialog)
@@ -37,12 +37,11 @@ class Ui_RuleActionEmailDialog(object):
         self.validateEmailBox.setGeometry(QtCore.QRect(20, 50, 250, 30))
         self.validateEmailBox.setStyleSheet("color: black;")
 
-        # Campo de entrada para el valor que se usará si el correo no es válido
         self.invalidEmailValueInput = QtWidgets.QLineEdit(self.emailOptionsContainer)
         self.invalidEmailValueInput.setGeometry(QtCore.QRect(250, 50, 130, 30))
         self.invalidEmailValueInput.setPlaceholderText("Valor para inválido")
         self.invalidEmailValueInput.setStyleSheet("background-color: white; color: black; border: 1px solid black;")
-        self.invalidEmailValueInput.setEnabled(False)  # Inicialmente deshabilitado
+        self.invalidEmailValueInput.setEnabled(False)  
 
         self.convertToLowercaseBox = QtWidgets.QCheckBox("Convertir correos a minúsculas", self.emailOptionsContainer)
         self.convertToLowercaseBox.setGeometry(QtCore.QRect(20, 80, 250, 30))
@@ -88,7 +87,6 @@ class Ui_RuleActionEmailDialog(object):
         self.separatorComboBox.currentIndexChanged.connect(self.toggle_custom_separator)
         self.validateEmailBox.stateChanged.connect(self.toggle_invalid_email_input)
 
-        # Conectar validaciones
         self.invalidEmailValueInput.textChanged.connect(self.validate_invalid_email_input)
         self.allowedDomainInput.textChanged.connect(self.validate_allowed_domains)
         self.customSeparatorInput.textChanged.connect(self.validate_custom_separator)
@@ -99,7 +97,6 @@ class Ui_RuleActionEmailDialog(object):
         self.acceptButton.setStyleSheet("background-color: white; color: black; border-radius: 10px;")
         self.acceptButton.clicked.connect(lambda: self.on_accept(Dialog))
 
-    # Validaciones de los campos
     def validate_invalid_email_input(self):
         value = self.invalidEmailValueInput.text()
         if re.search(r"[\"';]", value):
@@ -112,7 +109,7 @@ class Ui_RuleActionEmailDialog(object):
 
     def validate_custom_separator(self):
         separator = self.customSeparatorInput.text()
-        if re.search(r"[\"';]", separator):  # No permitir comillas ni punto y coma
+        if re.search(r"[\"';]", separator):  
             self.customSeparatorInput.clear()
 
     def toggle_invalid_email_input(self):
@@ -135,7 +132,6 @@ class Ui_RuleActionEmailDialog(object):
 
     def on_accept(self, dialog):
 
-        # Actualizar el controlador con las opciones seleccionadas
         self.controller.set_validate_email_format(self.validateEmailBox.isChecked())
         self.controller.set_convert_to_lowercase(self.convertToLowercaseBox.isChecked())
         self.controller.set_validate_domain(self.validateDomainBox.isChecked())
@@ -143,9 +139,8 @@ class Ui_RuleActionEmailDialog(object):
         self.controller.set_validate_separator(self.validateSeparatorBox.isChecked())
         self.controller.set_selected_separator(self.separatorComboBox.currentText())
         self.controller.set_custom_separator(self.customSeparatorInput.text())
-        self.controller.set_invalid_email_value(self.invalidEmailValueInput.text() or None)  # Si está vacío, será None (nulo)
+        self.controller.set_invalid_email_value(self.invalidEmailValueInput.text() or None)  
 
-        # Guardar y aceptar
         self.controller.accept()
         dialog.accept()
 

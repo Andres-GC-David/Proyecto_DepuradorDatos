@@ -59,14 +59,12 @@ class Ui_ConnectionDialog(QtCore.QObject):
         return input_field
 
     def connect(self, Dialog):
-        # Obtener valores de los campos de texto
         username = self.usernameInput.text()
         password = self.passwordInput.text()
         host = self.hostInput.text()
         port = self.portInput.text()
         service_name = self.serviceNameInput.text()  
 
-        # Validar campos antes de intentar conectar
         if not self.validate_inputs(username, password, host, port, service_name):
             return
 
@@ -77,7 +75,6 @@ class Ui_ConnectionDialog(QtCore.QObject):
         self.local_service_name = service_name
 
         try:
-            # Intentar establecer la conexión
             self.database_controller.set_credentials(username, password, host, port, service_name)
             connection = self.database_controller.get_connection()  
 

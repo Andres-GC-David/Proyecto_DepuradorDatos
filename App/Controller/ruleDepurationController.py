@@ -89,7 +89,6 @@ class RuleDepurationController:
                 else:
                     data = self._apply_custom_rule(rule, data, column)
 
-                # Actualizar progreso
                 processed_rows += 1
                 progress = int((processed_rows / total_rows) * 100)
                 progress_callback(progress)
@@ -129,12 +128,9 @@ class RuleDepurationController:
     def _identify_and_apply_rules(self, id_number, params):
         id_type = self._identify_id_type(id_number)
 
-        # Aplicar reglas específicas si es cédula de identidad
         if id_type == "cedula_identidad":
-            # Aplicar normalización especial para eliminar ceros separadores en posiciones específicas
             id_number = self._normalize_cedula_identidad_with_zero_separator(id_number)
 
-        # Aplicar reglas generales para todos los tipos de identificación
         if "Eliminar separador '-'" in params["modification"]:
             id_number = str(id_number).replace('-', '')
 
@@ -145,13 +141,11 @@ class RuleDepurationController:
             id_number = str(id_number).replace('-', '')
             id_number = self._normalize_cedula_identidad_with_zero_separator(str(id_number).replace('-', '')) if id_type == "cedula_identidad" else str(id_number).replace('-', '')
             
-        # Validar el formato de identificación
         if "Validar formato de cédula" in params["modification"]:
             user_friendly_format = params["modification"].split(":")[-1].strip()
             format_regex = self._convert_friendly_format_to_regex(user_friendly_format)
             id_number = id_number if re.fullmatch(format_regex, str(id_number)) else None
 
-        # Convertir la identificación a un formato personalizado
         if "Convertir cédula a formato" in params["modification"]:
             custom_format = params["modification"].split(":")[-1].strip()
             id_number = self._convert_to_custom_format(str(id_number), custom_format, id_type)
@@ -164,37 +158,33 @@ class RuleDepurationController:
         """
         id_number = str(id_number)
 
-        # Formatos de cédula de identidad (varias combinaciones con guiones y ceros separadores)
-        if (re.fullmatch(r"\d{1}-\d{3}-\d{3}", id_number) or    # Formato x-xxx-xxx
-            re.fullmatch(r"\d{1}-0\d{3}0\d{3}", id_number) or   # Formato x-0xxx0xxx
-            re.fullmatch(r"\d{1}-0\d{3}-0\d{3}", id_number) or   # Formato x-0xxx-0xxx
-            re.fullmatch(r"\d{1}-\d{6}", id_number) or          # Formato x-xxxxxx
-            re.fullmatch(r"\d{7}", id_number) or                # Formato xxxxxxx (sin guiones ni ceros)
-            re.fullmatch(r"\d0\d{3}0\d{3}", id_number) or       # Formato x0xxx0xxx
+        if (re.fullmatch(r"\d{1}-\d{3}-\d{3}", id_number) or    
+            re.fullmatch(r"\d{1}-0\d{3}0\d{3}", id_number) or   
+            re.fullmatch(r"\d{1}-0\d{3}-0\d{3}", id_number) or   
+            re.fullmatch(r"\d{1}-\d{6}", id_number) or          
+            re.fullmatch(r"\d{7}", id_number) or                
+            re.fullmatch(r"\d0\d{3}0\d{3}", id_number) or       
             re.fullmatch(r"\d{9,10}", id_number) or
-            re.fullmatch(r"\d{1}-\d{8}", id_number)):        # Formato x0xxx0xxx
+            re.fullmatch(r"\d{1}-\d{8}", id_number)):        
             return "cedula_identidad"
         
-        # Formato de cédula de residencia (DIMEX) (11 o 12 dígitos sin guiones)
+
         elif re.fullmatch(r"\d{11,12}", id_number):
             return "cedula_residencia"
         
-        # Formato de cédula jurídica (10 dígitos sin guiones)
         elif (re.fullmatch(r"\d{1}-\d{3}-\d{6}", id_number) or 
             re.fullmatch(r"\d{9,25}", id_number) or  
             re.fullmatch(r"\d{10}", id_number)):
             return "cedula_juridica"
         
-        # Formato de NITE (10 dígitos sin guiones)
         elif (re.fullmatch(r"\d{1}-\d{3}-\d{6}", id_number) or   
             re.fullmatch(r"\d{10}", id_number)): 
             return "nite"
         
-        # Formato de pasaporte (generalmente 6-9 caracteres alfanuméricos)
-        elif (re.fullmatch(r"[A-Za-z]{1,2}\d{5,9}", id_number) or             # Letras seguidas de números (e.g., HK920921)
+        elif (re.fullmatch(r"[A-Za-z]{1,2}\d{5,9}", id_number) or             
             re.fullmatch(r"[A-Za-z]{1,3}\d{6,9}", id_number) or    
-            re.fullmatch(r"[A-Za-z]{1,3}\s?\d{6,9}", id_number) or          # Letras y números con espacio opcional (e.g., USA 537533907)
-            re.fullmatch(r"[A-Za-z]{2}\d{9,13}", id_number)):               # Dos letras y hasta 13 dígitos (e.g., CR52147895645563)
+            re.fullmatch(r"[A-Za-z]{1,3}\s?\d{6,9}", id_number) or          
+            re.fullmatch(r"[A-Za-z]{2}\d{9,13}", id_number)):               
             return "pasaporte"
         
 
@@ -212,7 +202,6 @@ class RuleDepurationController:
         return regex_pattern
 
     def _convert_to_custom_format(self, id_number, custom_format, id_type):
-        # Si es una cédula de identidad, aplica normalización especial antes de formatear
         if id_type == "cedula_identidad":
             id_number = self._normalize_cedula_identidad_with_zero_separator(id_number)
         
@@ -232,22 +221,17 @@ class RuleDepurationController:
 
     def _normalize_cedula_identidad_with_zero_separator(self, cedula):
 
-        # Paso 1: Quitar todos los guiones
         cedula = cedula.replace('-', '')
 
-        # Paso 2: Verificar si ahora tiene el formato x0xxx0xxx y eliminar ceros en posiciones específicas
         if re.match(r"^\d0\d{3}0\d{3}$", cedula):
             normalized_cedula = cedula[0] + cedula[2:5] + cedula[6:]
             
             return normalized_cedula
 
-        # Paso 3: Otros formatos de cédula de identidad sin guiones (ej., x0xxxxxx o xxxxxxxx)
-        # Si es un formato de 9 dígitos pero con ceros en posiciones específicas, elimina solo los ceros de esas posiciones
         if re.fullmatch(r"\d{9}", cedula) and cedula[1] == '0' and cedula[5] == '0':
             normalized_cedula = cedula[0] + cedula[2:5] + cedula[6:]
             return normalized_cedula
 
-        # Si no cumple con los formatos anteriores, retornar la cédula sin modificaciones
         return cedula
 
   

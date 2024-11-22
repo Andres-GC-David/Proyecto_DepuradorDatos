@@ -1,9 +1,9 @@
 from PyQt6.QtCore import QThread, pyqtSignal
 
 class QueryWorker(QThread):
-    progress = pyqtSignal(int)  # Señal para el progreso
-    finished = pyqtSignal(tuple)  # Señal para el resultado exitoso
-    error = pyqtSignal(str)  # Señal para errores
+    progress = pyqtSignal(int)  
+    finished = pyqtSignal(tuple)  
+    error = pyqtSignal(str)  
 
     def __init__(self, database_controller, database_name, table_name):
         super().__init__()
@@ -13,20 +13,18 @@ class QueryWorker(QThread):
 
     def run(self):
         try:
-            self.progress.emit(10)  # Indicar inicio
+            self.progress.emit(10)  
 
-            # Conectar a la base de datos
             self.database_controller.connect()
-            self.progress.emit(30)  # Progreso tras conexión
+            self.progress.emit(30)  
 
-            # Ejecutar consulta para cargar datos
             data, column_names = self.database_controller.get_table_data(
                 self.database_name,
                 self.table_name,
-                progress_callback=self.progress.emit  # Progreso desde el controlador
+                progress_callback=self.progress.emit 
             )
 
-            self.progress.emit(100)  # Consulta completada
+            self.progress.emit(100)  
             self.finished.emit((data, column_names))
         except Exception as e:
             self.error.emit(str(e))
